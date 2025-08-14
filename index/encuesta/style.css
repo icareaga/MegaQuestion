@@ -1,0 +1,153 @@
+/* Reset básico */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f7fa;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+header {
+  background-color: #3f51b5;
+  color: white;
+  padding: 1.5rem 2rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+main {
+  max-width: 900px;
+  margin: 2rem auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 2rem;
+}
+
+h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #3f51b5;
+}
+
+.welcome {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.notifications {
+  background-color: #e3f2fd;
+  color: #0d47a1;
+  padding: 1rem;
+  border-radius: 5px;
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+}
+
+th, td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #f0f0f0;
+  color: #555;
+  font-weight: 600;
+}
+
+tr:hover {
+  background-color: #f9f9f9;
+}
+
+.status {
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: white;
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
+}
+
+.status.pendiente {
+  background-color: #ff0505;
+}
+
+.status.enprogreso {
+  background-color: #025eb9;
+}
+
+.status.finalizada {
+  background-color: #388e3c;
+}
+
+.btn {
+  background-color: #3f51b5;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn:hover {
+  background-color: #303f9f;
+}
+
+/* Estilos del pie de página */
+.footer {
+    border: 20px solid #0A1D67; /* Borde grueso azul */
+    text-align: center; /* Texto centrado */
+    width: 100%;
+    padding: 30px 0 0; /* Espaciado interno */
+    background-color: #0A1D67; /* Mismo color que el header */
+    color: #ffffff;
+    font-size: 0.9rem;
+    margin-top: auto; /* Empuja el footer hacia abajo */
+}
+
+/* Texto de copyright */
+.copyright {
+    font-weight: 300; /* Grosor de fuente ligero */
+    line-height: 1.5; /* Espaciado entre líneas */
+}
+
+.question {
+  margin-bottom: 1.5rem;
+}
+
+.question label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+select, textarea, input[type="text"] {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+input[type="radio"] {
+  margin-right: 0.5rem;
+  margin-top: 0.5rem;
+}

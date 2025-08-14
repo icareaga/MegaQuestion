@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nueva Encuesta - Super Administrador</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    Nueva Encuesta - Super Administrador
+  </header>
+
+  <main>
+    <h2>Crear Nueva Encuesta</h2>
+    <form id="nueva-encuesta-form">
+      
+      <div class="question">
+        <label for="titulo">Título de la Encuesta</label>
+        <input type="text" id="titulo" name="titulo" placeholder="Ejemplo: Evaluación Anual 2025" required />
+      </div>
+
+      <div class="question">
+        <label for="descripcion">Descripción</label>
+        <textarea id="descripcion" name="descripcion" rows="4" placeholder="Descripción breve de la encuesta" required></textarea>
+      </div>
+
+      <div class="question">
+        <label for="fechaInicio">Fecha de Inicio</label>
+        <input type="date" id="fechaInicio" name="fechaInicio" required />
+      </div>
+
+      <div class="question">
+        <label for="fechaFin">Fecha de Fin</label>
+        <input type="date" id="fechaFin" name="fechaFin" required />
+      </div>
+
+      <fieldset class="question tipo-evaluacion">
+        <legend><strong>Tipo de Evaluación</strong></legend>
+        <label>
+          <input type="radio" name="tipoEvaluacion" value="90" required />
+          90°: Se cargan pares (EvaluadorID = Jefe, EvaluadoID = Subordinado)
+        </label>
+        <label>
+          <input type="radio" name="tipoEvaluacion" value="180" />
+          180°: Se cargan pares en dos sentidos (Jefe → Subordinado) y (Subordinado → Jefe)
+        </label>
+        <label>
+          <input type="radio" name="tipoEvaluacion" value="360" />
+          360°: Se agregan todos los pares anteriores más Autoevaluación y Par → Par
+        </label>
+        <p class="help-text">Selecciona el tipo de evaluación según la regla de negocio.</p>
+      </fieldset>
+
+      <button type="submit" class="btn success">Crear Encuesta</button>
+    </form>
+  </main>
+
+  <footer class="footer">
+    <p class="copyright">© 2025 MegaQuestion. Todos los derechos reservados.</p>
+  </footer>
+
+  <script>
+    // Validación sencilla antes de enviar
+    document.getElementById('nueva-encuesta-form').addEventListener('submit', function(e) {
+      const form = e.target;
+      const fechaInicio = new Date(form.fechaInicio.value);
+      const fechaFin = new Date(form.fechaFin.value);
+
+      if(fechaFin < fechaInicio) {
+        alert('La fecha de fin no puede ser anterior a la fecha de inicio.');
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>
