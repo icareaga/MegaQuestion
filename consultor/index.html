@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEGA - Panel de Consultor</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <a href="../index.html" class="logo-link">
+        <img src="../img/Logo.jpg" alt="MEGA Logo" class="mega-logo">
+      </a>
+      <h2 class="mega-subtitle">MegaQuestion - Consultor</h2>
+    </div>
+    <div class="user-menu">
+      <span class="username">Consultor Name</span>
+      <button class="btn logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Salir
+      </button>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <main class="main-content">
+      <div class="welcome-section">
+        <h1>Reportes y Análisis</h1>
+        <div class="consultor-actions">
+          <button class="btn" onclick="generateReport()">
+            <i class="fas fa-file-export"></i> Generar Reporte
+          </button>
+          <button class="btn success">
+            <i class="fas fa-chart-line"></i> Ver Estadísticas
+          </button>
+        </div>
+      </div>
+
+      <section class="section">
+        <h2><i class="fas fa-poll-h"></i> Resultados de Encuestas</h2>
+        <div class="filters">
+          <select class="filter-select">
+            <option>Todas las encuestas</option>
+            <option>Evaluación 360°</option>
+            <option>Clima Laboral</option>
+          </select>
+          <select class="filter-select">
+            <option>Últimos 30 días</option>
+            <option>Últimos 3 meses</option>
+            <option>Todo el período</option>
+          </select>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Encuesta</th>
+                <th>Fecha</th>
+                <th>Participantes</th>
+                <th>Puntuación</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-label="Encuesta">Evaluación 360°</td>
+                <td data-label="Fecha">01/08/2025</td>
+                <td data-label="Participantes">45</td>
+                <td data-label="Puntuación">4.2/5</td>
+                <td data-label="Acciones">
+                  <button class="btn"><i class="fas fa-eye"></i> Ver</button>
+                </td>
+              </tr>
+              <tr>
+                <td data-label="Encuesta">Clima Laboral</td>
+                <td data-label="Fecha">15/07/2025</td>
+                <td data-label="Participantes">32</td>
+                <td data-label="Puntuación">3.8/5</td>
+                <td data-label="Acciones">
+                  <button class="btn"><i class="fas fa-eye"></i> Ver</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2><i class="fas fa-chart-bar"></i> Gráficos de Resultados</h2>
+        <div class="charts-container">
+          <div class="chart-placeholder">
+            <p>Gráfico de satisfacción general</p>
+          </div>
+          <div class="chart-placeholder">
+            <p>Gráfico por áreas/departamentos</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <p class="copyright">Derechos Reservados <br>
+      Desarrollado por Equipo UTOE <br>
+      MEGA @Copy 2025</p>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

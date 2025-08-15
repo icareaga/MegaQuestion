@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEGA - Panel de Administración</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <a href="../index.html" class="logo-link">
+        <img src="../img/Logo.jpg" alt="MEGA Logo" class="mega-logo">
+      </a>
+      <h2 class="mega-subtitle">MegaQuestion - Administrador</h2>
+    </div>
+    <div class="user-menu">
+      <span class="username">Admin User</span>
+      <button class="btn logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Salir
+      </button>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <main class="main-content">
+      <div class="welcome-section">
+        <h1>Panel de Administración</h1>
+        <div class="admin-actions">
+          <a href="../nueva-encuesta/index.html" class="btn success">
+            <i class="fas fa-plus"></i> Nueva Encuesta
+          </a>
+          <button class="btn" onclick="showUserManagement()">
+            <i class="fas fa-users"></i> Gestionar Usuarios
+          </button>
+        </div>
+      </div>
+
+      <section class="section">
+        <h2><i class="fas fa-poll"></i> Encuestas Activas</h2>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Fin</th>
+                <th>Participantes</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-label="Nombre">Evaluación 360°</td>
+                <td data-label="Inicio">01/08/2025</td>
+                <td data-label="Fin">30/08/2025</td>
+                <td data-label="Participantes">45/60</td>
+                <td data-label="Estado"><span class="status enprogreso">En curso</span></td>
+                <td data-label="Acciones">
+                  <button class="btn"><i class="fas fa-edit"></i></button>
+                  <button class="btn danger"><i class="fas fa-trash"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td data-label="Nombre">Clima Laboral</td>
+                <td data-label="Inicio">15/07/2025</td>
+                <td data-label="Fin">15/09/2025</td>
+                <td data-label="Participantes">32/50</td>
+                <td data-label="Estado"><span class="status enprogreso">En curso</span></td>
+                <td data-label="Acciones">
+                  <button class="btn"><i class="fas fa-edit"></i></button>
+                  <button class="btn danger"><i class="fas fa-trash"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2><i class="fas fa-chart-pie"></i> Estadísticas</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3>Encuestas Activas</h3>
+            <p class="stat-value">2</p>
+          </div>
+          <div class="stat-card">
+            <h3>Usuarios Registrados</h3>
+            <p class="stat-value">78</p>
+          </div>
+          <div class="stat-card">
+            <h3>Respuestas Totales</h3>
+            <p class="stat-value">145</p>
+          </div>
+          <div class="stat-card">
+            <h3>Tasa de Participación</h3>
+            <p class="stat-value">75%</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <p class="copyright">Derechos Reservados <br>
+      Desarrollado por Equipo UTOE <br>
+      MEGA @Copy 2025</p>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEGA - Nueva Encuesta</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <a href="../index.html" class="logo-link">
+        <img src="../img/Logo.jpg" alt="MEGA Logo" class="mega-logo">
+      </a>
+      <h2 class="mega-subtitle">MegaQuestion - Nueva Encuesta</h2>
+    </div>
+    <div class="user-menu">
+      <span class="username">Admin User</span>
+      <button class="btn logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Salir
+      </button>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <main class="main-content">
+      <div class="welcome-section">
+        <h1>Crear Nueva Encuesta</h1>
+        <div class="breadcrumb">
+          <a href="../administrator/index.html">Administración</a> / Nueva Encuesta
+        </div>
+      </div>
+
+      <form id="surveyForm" class="survey-form">
+        <section class="form-section">
+          <h2><i class="fas fa-info-circle"></i> Información Básica</h2>
+          
+          <div class="form-group">
+            <label for="surveyName">Nombre de la Encuesta</label>
+            <input type="text" id="surveyName" placeholder="Ej: Evaluación 360° 2025" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="surveyDescription">Descripción</label>
+            <textarea id="surveyDescription" rows="3" placeholder="Descripción de la encuesta"></textarea>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="startDate">Fecha de Inicio</label>
+              <input type="date" id="startDate" required>
+            </div>
+            <div class="form-group">
+              <label for="endDate">Fecha de Fin</label>
+              <input type="date" id="endDate" required>
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2><i class="fas fa-cog"></i> Configuración</h2>
+          
+          <div class="form-group">
+            <label>Tipo de Evaluación</label>
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="evalType" value="90" checked>
+                <span class="radio-label">90° (Jefe → Subordinado)</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="evalType" value="180">
+                <span class="radio-label">180° (Bidireccional)</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="evalType" value="360">
+                <span class="radio-label">360° (Multidimensional)</span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="participants">Participantes</label>
+            <select id="participants" multiple>
+              <option>Departamento de Ventas</option>
+              <option>Departamento de TI</option>
+              <option>Departamento de RH</option>
+              <option>Gerencia</option>
+            </select>
+            <p class="help-text">Mantén presionada la tecla Ctrl (Windows) o Command (Mac) para seleccionar múltiples opciones</p>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2><i class="fas fa-question-circle"></i> Preguntas</h2>
+          <div id="questionsContainer">
+            <!-- Preguntas se agregarán aquí dinámicamente -->
+          </div>
+          <button type="button" class="btn" onclick="addQuestion()">
+            <i class="fas fa-plus"></i> Agregar Pregunta
+          </button>
+        </section>
+
+        <div class="form-actions">
+          <button type="button" class="btn danger" onclick="cancelForm()">
+            <i class="fas fa-times"></i> Cancelar
+          </button>
+          <button type="submit" class="btn success">
+            <i class="fas fa-save"></i> Guardar Encuesta
+          </button>
+        </div>
+      </form>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <p class="copyright">Derechos Reservados <br>
+      Desarrollado por Equipo UTOE <br>
+      MEGA @Copy 2025</p>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

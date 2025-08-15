@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEGA - Responder Encuesta</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <a href="index.html" class="logo-link">
+        <img src="..img/Logo.jpg" alt="MEGA Logo" class="mega-logo">
+      </a>
+      <h2 class="mega-subtitle">MegaQuestion - Encuesta</h2>
+    </div>
+    <div class="user-menu">
+      <span class="username">Usuario Name</span>
+      <button class="btn logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Salir
+      </button>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <main class="main-content">
+      <div class="survey-header">
+        <h1>Satisfacción Laboral 2025</h1>
+        <div class="survey-info">
+          <p><strong>Fecha límite:</strong> 30/08/2025</p>
+          <p><i class="fas fa-info-circle"></i> Esta encuesta es anónima</p>
+        </div>
+      </div>
+
+      <form id="surveyForm" class="survey-form">
+        <div class="question-group">
+          <div class="question-item">
+            <h3>1. ¿Te sientes motivado en tu puesto actual?</h3>
+            <div class="answer-options">
+              <label class="radio-option">
+                <input type="radio" name="q1" value="si" required>
+                <span class="radio-label">Sí</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="q1" value="no" required>
+                <span class="radio-label">No</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="question-item">
+            <h3>2. ¿Cómo calificas tu relación con tus compañeros?</h3>
+            <div class="answer-options">
+              <select class="answer-select" required>
+                <option value="">Selecciona una opción</option>
+                <option value="excelente">Excelente</option>
+                <option value="buena">Buena</option>
+                <option value="regular">Regular</option>
+                <option value="mala">Mala</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="question-item">
+            <h3>3. ¿Qué mejorarías en tu área de trabajo?</h3>
+            <textarea class="answer-text" placeholder="Escribe tu respuesta aquí..." required></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn danger" onclick="cancelSurvey()">
+            <i class="fas fa-times"></i> Cancelar
+          </button>
+          <button type="submit" class="btn success">
+            <i class="fas fa-paper-plane"></i> Enviar Encuesta
+          </button>
+        </div>
+      </form>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <p class="copyright">Derechos Reservados <br>
+      Desarrollado por Equipo UTOE <br>
+      MEGA @Copy 2025</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    // Función para cancelar la encuesta
+    function cancelSurvey() {
+      if (confirm('¿Estás seguro de que deseas cancelar? Los cambios no se guardarán.')) {
+        window.location.href = 'usuario/index.html';
+      }
+    }
+
+    // Manejar envío del formulario
+    document.getElementById('surveyForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Validar que todas las preguntas estén respondidas
+      const formValid = this.checkValidity();
+      
+      if (!formValid) {
+        alert('Por favor responde todas las preguntas antes de enviar la encuesta');
+        return;
+      }
+      
+      // Simular envío
+      alert('Encuesta enviada correctamente. ¡Gracias por tu participación!');
+      
+      // Redirigir al panel de usuario
+      setTimeout(() => {
+        window.location.href = 'usuario/index.html';
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
