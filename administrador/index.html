@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MEGA - Panel de Administración</title>
-  <link rel="stylesheet" href="../css/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="header">
     <div class="header-content">
       <a href="../index.html" class="logo-link">
-        <img src="../img/Logo.jpg" alt="MEGA Logo" class="mega-logo">
+        <img src="../img/Logo.jpg" alt="MEGA Logo" class="mega-logo" />
       </a>
       <h2 class="mega-subtitle">MegaQuestion - Administrador</h2>
     </div>
@@ -39,50 +39,90 @@
         </div>
       </div>
 
+    <section class="section">
+  <h2><i class="fas fa-poll"></i><b> Encuestas Activas</b></h2><br>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Fecha Inicio</th>
+          <th>Fecha Fin</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-label="Nombre">Evaluación 360°</td>
+          <td data-label="Inicio">01/08/2025</td>
+          <td data-label="Fin">30/08/2025</td>
+          <td data-label="Participantes">45/60</td>
+          <td data-label="Estado"><span class="status enprogreso">En curso</span></td>
+          <td data-label="Acciones">
+            <button class="btn"><i class="fas fa-edit"></i></button>
+            <button class="btn danger"><i class="fas fa-trash"></i></button>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="Nombre">Clima Laboral</td>
+          <td data-label="Inicio">15/07/2025</td>
+          <td data-label="Fin">15/09/2025</td>
+          <td data-label="Participantes">32/50</td>
+          <td data-label="Estado"><span class="status enprogreso">En curso</span></td>
+          <td data-label="Acciones">
+            <button class="btn"><i class="fas fa-edit"></i></button>
+            <button class="btn danger"><i class="fas fa-trash"></i></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+      <br><br>
+
       <section class="section">
-        <h2><i class="fas fa-poll"></i> Encuestas Activas</h2>
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Fecha Inicio</th>
-                <th>Fecha Fin</th>
-                <th>Participantes</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td data-label="Nombre">Evaluación 360°</td>
-                <td data-label="Inicio">01/08/2025</td>
-                <td data-label="Fin">30/08/2025</td>
-                <td data-label="Participantes">45/60</td>
-                <td data-label="Estado"><span class="status enprogreso">En curso</span></td>
-                <td data-label="Acciones">
-                  <button class="btn"><i class="fas fa-edit"></i></button>
-                  <button class="btn danger"><i class="fas fa-trash"></i></button>
-                </td>
-              </tr>
-              <tr>
-                <td data-label="Nombre">Clima Laboral</td>
-                <td data-label="Inicio">15/07/2025</td>
-                <td data-label="Fin">15/09/2025</td>
-                <td data-label="Participantes">32/50</td>
-                <td data-label="Estado"><span class="status enprogreso">En curso</span></td>
-                <td data-label="Acciones">
-                  <button class="btn"><i class="fas fa-edit"></i></button>
-                  <button class="btn danger"><i class="fas fa-trash"></i></button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <h2><i class="fas fa-chart-bar"></i> Estadísticas Detalladas</h2>
+
+        <div class="stats-filter">
+          <select id="region">
+            <option value="">-- Seleccionar Región --</option>
+            <option value="Noreste">Noreste</option>
+            <option value="Suroeste ">Suroeste</option>
+            <option value="Occidente">Occidente</option>
+          </select>
+          <select id="departamento">
+            <option value="">-- Seleccionar Departamento --</option>
+            <option value="Valle">Legal</option>
+            <option value="Antioquia">TI</option>
+            <option value="Sonora">Finanzas</option>
+          </select>
+          <select id="ciudad">
+            <option value="">-- Seleccionar Ciudad --</option>
+            <option value="Cali">GUADALAJARA</option>
+            <option value="Medellin">CIUDAD DE MEXICO </option>
+            <option value="Hermosillo">HERMOSILLO</option>
+          </select>
         </div>
+
+        <table class="stats-table">
+          <thead>
+            <tr>
+              <th>Categoría</th>
+              <th>Resultados</th>
+              <th>Total</th>
+              <th>Cambio</th>
+            </tr>
+          </thead>
+          <tbody id="tablaDatos">
+            <!-- Datos generados dinámicamente -->
+          </tbody>
+        </table>
       </section>
 
       <section class="section">
-        <h2><i class="fas fa-chart-pie"></i> Estadísticas</h2>
+        <h2><i class="fas fa-chart-pie"></i> Estadísticas Resumen</h2>
         <div class="stats-grid">
           <div class="stat-card">
             <h3>Encuestas Activas</h3>
@@ -106,10 +146,89 @@
   </div>
 
   <footer class="footer">
-    <p class="copyright">Derechos Reservados <br>
-      Desarrollado por Equipo UTOE <br>
-      MEGA @Copy 2025</p>
+    <p class="copyright">
+      Derechos Reservados <br />
+      Desarrollado por Equipo UTOE <br />
+      MEGA @Copy 2025
+    </p>
   </footer>
+
+  <!-- SCRIPT DE DATOS FICTICIOS -->
+  <script>
+    const tabla = document.getElementById("tablaDatos");
+    const filtros = ["region", "departamento", "ciudad"];
+
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function generarDatosFicticios() {
+      const categorias = [
+        "Calidad",
+        "Objetivos",
+        "Conexión Social",
+        "Propósito",
+        "Compromiso",
+        "Bienestar",
+        "Comunicación"
+      ];
+
+      return categorias.map(categoria => {
+        let rojo = rand(0, 20);
+        let amarillo = rand(10, 30);
+        let verde = 100 - rojo - amarillo;
+
+        if (verde < 0) {
+          verde = rand(50, 80);
+          rojo = rand(0, 20);
+          amarillo = 100 - verde - rojo;
+        }
+
+        const total = verde;
+        const cambio = rand(-10, 10);
+
+        return { categoria, rojo, amarillo, verde, total, cambio };
+      });
+    }
+
+    function renderTabla(datos) {
+      tabla.innerHTML = "";
+
+      datos.forEach(item => {
+        const fila = document.createElement("tr");
+
+        const barHTML = `
+          <div class="bar-container">
+            <div class="bar-red" style="width: ${item.rojo}%"></div>
+            <div class="bar-yellow" style="width: ${item.amarillo}%"></div>
+            <div class="bar-green" style="width: ${item.verde}%"></div>
+          </div>
+        `;
+
+        const cambioHTML = item.cambio >= 0
+          ? `<span class="change-up"><i class="fas fa-arrow-up"></i> ${item.cambio}%</span>`
+          : `<span class="change-down"><i class="fas fa-arrow-down"></i> ${Math.abs(item.cambio)}%</span>`;
+
+        fila.innerHTML = `
+          <td>${item.categoria}</td>
+          <td>${barHTML}</td>
+          <td>${item.total}%</td>
+          <td>${cambioHTML}</td>
+        `;
+
+        tabla.appendChild(fila);
+      });
+    }
+
+    filtros.forEach(id => {
+      document.getElementById(id).addEventListener("change", () => {
+        renderTabla(generarDatosFicticios());
+      });
+    });
+
+    // Carga inicial
+    renderTabla(generarDatosFicticios());
+  </script>
 
   <script src="../js/main.js"></script>
 </body>

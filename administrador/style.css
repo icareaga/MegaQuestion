@@ -1,3 +1,27 @@
+/* ============================
+   Estilos generales
+============================= */
+
+:root {
+  --primary-color: #0d47a1;
+  --danger-color: #dc3545;
+  --border-radius: 6px;
+  --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  --font-color: #333;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f4f6f9;
+  margin: 0;
+  padding: 0;
+  color: var(--font-color);
+}
+
+/* ============================
+   Panel de administración
+============================= */
+
 .admin-actions {
   display: flex;
   gap: 15px;
@@ -8,7 +32,77 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  padding: 8px 14px;
+  border-radius: 5px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
 }
+
+.btn.danger {
+  background-color: var(--danger-color);
+  margin-left: 8px;
+}
+
+.btn.danger:hover {
+  background-color: #b71c1c;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+/* ============================
+   Tabla de Encuestas Activas
+============================= */
+
+.table-container {
+  overflow-x: auto;
+}
+
+.table-container table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  font-size: 16px;
+}
+
+.table-container th,
+.table-container td {
+  padding: 14px 20px;
+  text-align: left;
+}
+
+.table-container th {
+  font-weight: bold;
+  color: var(--font-color);
+}
+
+.table-container tbody tr {
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: var(--box-shadow);
+}
+
+.table-container .btn {
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+/* Etiqueta de estado */
+.status.enprogreso {
+  background-color: #e0f7fa;
+  color: #00796b;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-weight: 600;
+}
+
+/* ============================
+   Estadísticas generales
+============================= */
 
 .stats-grid {
   display: grid;
@@ -31,27 +125,145 @@
   margin-top: 10px;
 }
 
-.btn.danger {
-  background-color: var(--danger-color);
-  margin-left: 8px;
+/* ============================
+   Estadísticas Detalladas (con filtros)
+============================= */
+
+.stats-filter {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-.btn.danger:hover {
-  background-color: #b71c1c;
+.stats-filter select {
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  min-width: 140px;
+  background-color: white;
+  transition: border-color 0.3s ease;
 }
+
+.stats-filter select:hover,
+.stats-filter select:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 5px var(--primary-color);
+}
+
+/* ============================
+   Tabla de Estadísticas Detalladas
+============================= */
+
+.stats-table {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 40px;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.stats-table th,
+.stats-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  font-weight: 500;
+}
+
+.stats-table thead {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 700;
+}
+
+/* ============================
+   Barras de colores (rojo, amarillo, verde)
+============================= */
+
+.bar-container {
+  display: flex;
+  height: 22px;
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: #f0f0f0;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.8);
+  max-width: 350px;
+}
+
+.bar-red {
+  background-color: #e74c3c;
+}
+
+.bar-yellow {
+  background-color: #f1c40f;
+}
+
+.bar-green {
+  background-color: #2ecc71;
+}
+
+/* Cambios positivos o negativos */
+.change-up {
+  color: #27ae60;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.change-down {
+  color: #c0392b;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ============================
+   Responsive
+============================= */
 
 @media (max-width: 768px) {
   .admin-actions {
     flex-direction: column;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .stats-filter {
+    justify-content: flex-start;
+  }
+
+  .stats-table {
+    font-size: 14px;
+  }
+
+  .table-container table {
+    font-size: 14px;
   }
 }
 
 @media (max-width: 480px) {
   .stats-grid {
     grid-template-columns: 1fr;
+  }
+
+  .stats-filter {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .stats-table,
+  .table-container table {
+    font-size: 13px;
   }
 }
