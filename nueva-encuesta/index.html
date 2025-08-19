@@ -4,12 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MEGA - Nueva Encuesta</title>
-  <link rel="stylesheet" href="../css/style.css">
+  <!-- Fuente de Google -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <!-- Iconos de Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <!-- Hoja de estilos principal -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Cabecera de la aplicación -->
   <header class="header">
     <div class="header-content">
       <a href="../index.html" class="logo-link">
@@ -25,6 +28,7 @@
     </div>
   </header>
 
+  <!-- Contenedor principal -->
   <div class="main-container">
     <main class="main-content">
       <div class="welcome-section">
@@ -34,7 +38,9 @@
         </div>
       </div>
 
+      <!-- Formulario de encuesta -->
       <form id="surveyForm" class="survey-form">
+        <!-- Sección de información básica -->
         <section class="form-section">
           <h2><i class="fas fa-info-circle"></i> Información Básica</h2>
           
@@ -60,6 +66,7 @@
           </div>
         </section>
 
+        <!-- Sección de configuración -->
         <section class="form-section">
           <h2><i class="fas fa-cog"></i> Configuración</h2>
           
@@ -93,16 +100,45 @@
           </div>
         </section>
 
+        <!-- Sección de preguntas -->
         <section class="form-section">
           <h2><i class="fas fa-question-circle"></i> Preguntas</h2>
           <div id="questionsContainer">
-            <!-- Preguntas se agregarán aquí dinámicamente -->
+            <!-- Las preguntas se agregarán aquí dinámicamente mediante JavaScript -->
           </div>
-          <button type="button" class="btn" onclick="addQuestion()">
-            <i class="fas fa-plus"></i> Agregar Pregunta
+          
+          <!-- Biblioteca de preguntas predefinidas -->
+          <div class="question-library">
+            <h3><i class="fas fa-book"></i> Biblioteca de Preguntas</h3>
+            <p>Selecciona preguntas predefinidas o crea las tuyas propias</p>
+            
+            <div class="form-group">
+              <label for="categoryFilter">Filtrar por categoría:</label>
+              <select id="categoryFilter" onchange="filterQuestions()">
+                <option value="all">Todas las categorías</option>
+                <option value="comunicacion">Comunicación</option>
+                <option value="liderazgo">Liderazgo</option>
+                <option value="trabajoEquipo">Trabajo en Equipo</option>
+                <option value="habilidades">Habilidades Técnicas</option>
+                <option value="valores">Valores Organizacionales</option>
+              </select>
+            </div>
+            
+            <div class="library-container" id="questionLibrary">
+              <!-- Las preguntas predefinidas se cargarán aquí mediante JavaScript -->
+            </div>
+            
+            <button type="button" class="btn" onclick="addSelectedQuestions()" style="margin-top: 15px;">
+              <i class="fas fa-plus"></i> Agregar Preguntas Seleccionadas
+            </button>
+          </div>
+          
+          <button type="button" class="btn" onclick="addQuestion()" style="margin-top: 20px;">
+            <i class="fas fa-plus-circle"></i> Agregar Pregunta Personalizada
           </button>
         </section>
 
+        <!-- Acciones del formulario -->
         <div class="form-actions">
           <button type="button" class="btn danger" onclick="cancelForm()">
             <i class="fas fa-times"></i> Cancelar
@@ -115,13 +151,14 @@
     </main>
   </div>
 
+  <!-- Pie de página -->
   <footer class="footer">
     <p class="copyright">Derechos Reservados <br>
       Desarrollado por Equipo UTOE <br>
       MEGA @Copy 2025</p>
   </footer>
 
-  <script src="../js/main.js"></script>
-  <script src="script.js"></script>
+  <!-- Scripts de JavaScript -->
+  <script src="nueva-encuesta.js"></script>
 </body>
 </html>

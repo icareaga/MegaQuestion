@@ -1,3 +1,143 @@
+ /* ESTILOS PARA EL FORMULARIO DE ENCUESTAS
+   Este archivo contiene todos los estilos para la aplicación
+ */
+
+/* Variables CSS para mantener consistencia en colores y estilos */
+:root {
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --accent-color: #e74c3c;
+  --success-color: #2ecc71;
+  --danger-color: #e74c3c;
+  --warning-color: #f39c12;
+  --gray-color: #95a5a6;
+  --light-gray: #ecf0f1;
+  --dark-gray: #0d47a1;
+  --border-radius: 8px;
+  --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos generales */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f5f7fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Estilos para la cabecera */
+.header {
+  background: linear-gradient(135deg, var(--primary-color), var(--dark-gray));
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--box-shadow);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.mega-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+
+.mega-subtitle {
+  font-weight: 300;
+  font-size: 1.5rem;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.username {
+  font-weight: 500;
+}
+
+/* Estilos para botones */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(17, 0, 255, 0.2);
+}
+
+.logout-btn {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.logout-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.success {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.danger {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.small {
+  padding: 5px 10px;
+  font-size: 0.85rem;
+}
+
+/* Contenedor principal */
+.main-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Sección de bienvenida */
+.welcome-section {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.welcome-section h1 {
+  color: var(--primary-color);
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
 .breadcrumb {
   color: var(--gray-color);
   margin-top: 0.5rem;
@@ -8,6 +148,7 @@
   text-decoration: none;
 }
 
+/* Estilos para el formulario */
 .survey-form {
   display: flex;
   flex-direction: column;
@@ -19,6 +160,16 @@
   padding: 25px;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
+}
+
+.form-section h2 {
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--light-gray);
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .form-group {
@@ -41,6 +192,15 @@
   border: 1px solid #ddd;
   border-radius: var(--border-radius);
   font-size: 1rem;
+  transition: border 0.3s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="date"]:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: var(--secondary-color);
+  outline: none;
 }
 
 .form-group textarea {
@@ -68,6 +228,13 @@
   align-items: center;
   gap: 10px;
   cursor: pointer;
+  padding: 10px;
+  border-radius: var(--border-radius);
+  transition: background-color 0.2s;
+}
+
+.radio-option:hover {
+  background-color: var(--light-gray);
 }
 
 .radio-label {
@@ -87,12 +254,14 @@
   margin-top: 2rem;
 }
 
+/* Estilos para las preguntas */
 .question-item {
   background: #f9f9f9;
-  padding: 15px;
+  padding: 20px;
   border-radius: var(--border-radius);
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   position: relative;
+  border-left: 4px solid var(--secondary-color);
 }
 
 .remove-question {
@@ -101,9 +270,87 @@
   top: 15px;
   color: var(--danger-color);
   cursor: pointer;
+  font-size: 1.2rem;
 }
 
+.options-container {
+  margin-top: 15px;
+  padding: 15px;
+  background: white;
+  border-radius: var(--border-radius);
+  border: 1px dashed var(--gray-color);
+}
+
+.option-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.option-item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.option-item input {
+  flex: 1;
+}
+
+/* Estilos para la biblioteca de preguntas */
+.question-library {
+  margin-top: 20px;
+  border-top: 1px solid var(--light-gray);
+  padding-top: 20px;
+}
+
+.library-container {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+  padding: 10px;
+  margin-top: 10px;
+  background: var(--light-gray);
+}
+
+.library-item {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.library-item:hover {
+  background-color: #e3f2fd;
+}
+
+.library-item:last-child {
+  border-bottom: none;
+}
+
+/* Pie de página */
+.footer {
+  background-color: #0d47a1;
+  color: white;
+  text-align: center;
+  padding: 2rem;
+  margin-top: 3rem;
+}
+
+.copyright {
+  line-height: 1.8;
+}
+
+/* Estilos responsivos */
 @media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
   .form-row {
     flex-direction: column;
     gap: 0;
@@ -112,4 +359,12 @@
   .form-actions {
     flex-direction: column;
   }
-}
+  
+  .radio-group {
+    flex-direction: column;
+  }
+  
+    .welcome-section h1 {
+      font-size: 2rem;
+    }
+  }
