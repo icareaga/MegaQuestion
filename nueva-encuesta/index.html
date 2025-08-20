@@ -4,12 +4,431 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MEGA - Nueva Encuesta</title>
-  <!-- Fuente de Google -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-  <!-- Iconos de Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-  <!-- Hoja de estilos principal -->
-  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Variables CSS para mantener consistencia en colores y estilos */
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #3498db;
+      --accent-color: #e74c3c;
+      --success-color: #2ecc71;
+      --danger-color: #e74c3c;
+      --warning-color: #f39c12;
+      --gray-color: #95a5a6;
+      --light-gray: #ecf0f1;
+      --dark-gray: #0d47a1;
+      --border-radius: 8px;
+      --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Estilos generales */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* Estilos para la cabecera */
+    .header {
+      background: linear-gradient(135deg, var(--primary-color), var(--dark-gray));
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--box-shadow);
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .mega-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 20px;
+    }
+
+    .mega-subtitle {
+      font-weight: 300;
+      font-size: 1.5rem;
+    }
+
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .username {
+      font-weight: 500;
+    }
+
+    /* Estilos para botones */
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(17, 0, 255, 0.2);
+    }
+
+    .logout-btn {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+
+    .logout-btn:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .success {
+      background-color: var(--success-color);
+      color: white;
+    }
+
+    .danger {
+      background-color: var(--danger-color);
+      color: white;
+    }
+
+    .small {
+      padding: 5px 10px;
+      font-size: 0.85rem;
+    }
+
+    /* Contenedor principal */
+    .main-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* Sección de bienvenida */
+    .welcome-section {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .welcome-section h1 {
+      color: var(--primary-color);
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .breadcrumb {
+      color: var(--gray-color);
+      margin-top: 0.5rem;
+    }
+
+    .breadcrumb a {
+      color: var(--secondary-color);
+      text-decoration: none;
+    }
+
+    /* Estilos para el formulario */
+    .survey-form {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .form-section {
+      background: white;
+      padding: 25px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+    }
+
+    .form-section h2 {
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--light-gray);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--primary-color);
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="date"],
+    .form-group input[type="search"],
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: border 0.3s ease;
+    }
+
+    .form-group input[type="text"]:focus,
+    .form-group input[type="date"]:focus,
+    .form-group input[type="search"]:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: var(--secondary-color);
+      outline: none;
+    }
+
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 20px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      padding: 10px;
+      border-radius: var(--border-radius);
+      transition: background-color 0.2s;
+    }
+
+    .radio-option:hover {
+      background-color: var(--light-gray);
+    }
+
+    .radio-label {
+      user-select: none;
+    }
+
+    .help-text {
+      font-size: 0.85rem;
+      color: var(--gray-color);
+      margin-top: 0.5rem;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin-top: 2rem;
+    }
+
+    /* Estilos para las preguntas */
+    .question-item {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: var(--border-radius);
+      margin-bottom: 20px;
+      position: relative;
+      border-left: 4px solid var(--secondary-color);
+    }
+
+    .remove-question {
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      color: var(--danger-color);
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    .options-container {
+      margin-top: 15px;
+      padding: 15px;
+      background: white;
+      border-radius: var(--border-radius);
+      border: 1px dashed var(--gray-color);
+    }
+
+    .option-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .option-item {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .option-item input {
+      flex: 1;
+    }
+
+    /* Estilos para la biblioteca de preguntas */
+    .question-library {
+      margin-top: 20px;
+      border-top: 1px solid var(--light-gray);
+      padding-top: 20px;
+    }
+
+    .library-container {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      padding: 10px;
+      margin-top: 10px;
+      background: var(--light-gray);
+    }
+
+    .library-item {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .library-item:hover {
+      background-color: #e3f2fd;
+    }
+
+    .library-item:last-child {
+      border-bottom: none;
+    }
+
+    /* Nuevos estilos para el buscador */
+    .search-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .search-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .search-tag {
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .search-tag:hover {
+      background-color: var(--primary-color);
+    }
+
+    .search-tag.active {
+      background-color: var(--accent-color);
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 20px;
+      color: var(--gray-color);
+      font-style: italic;
+    }
+
+    /* Pie de página */
+    .footer {
+      background-color: #0d47a1;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+      margin-top: 3rem;
+    }
+
+    .copyright {
+      line-height: 1.8;
+    }
+
+    /* Estilos responsivos */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+      
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .radio-group {
+        flex-direction: column;
+      }
+      
+      .welcome-section h1 {
+        font-size: 2rem;
+      }
+      
+      .search-container {
+        flex-direction: column;
+      }
+      
+      .search-input {
+        min-width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Cabecera de la aplicación -->
@@ -34,7 +453,7 @@
       <div class="welcome-section">
         <h1>Crear Nueva Encuesta</h1>
         <div class="breadcrumb">
-          <a href="../administrator/index.html">Administración</a> / Nueva Encuesta
+          <a href="../administrador/index.html">Administración</a> / Nueva Encuesta
         </div>
       </div>
 
@@ -112,16 +531,33 @@
             <h3><i class="fas fa-book"></i> Biblioteca de Preguntas</h3>
             <p>Selecciona preguntas predefinidas o crea las tuyas propias</p>
             
-            <div class="form-group">
-              <label for="categoryFilter">Filtrar por categoría:</label>
-              <select id="categoryFilter" onchange="filterQuestions()">
-                <option value="all">Todas las categorías</option>
-                <option value="comunicacion">Comunicación</option>
-                <option value="liderazgo">Liderazgo</option>
-                <option value="trabajoEquipo">Trabajo en Equipo</option>
-                <option value="habilidades">Habilidades Técnicas</option>
-                <option value="valores">Valores Organizacionales</option>
-              </select>
+            <!-- Buscador de preguntas -->
+            <div class="search-container">
+              <div class="form-group search-input">
+                <label for="questionSearch">Buscar preguntas:</label>
+                <input type="search" id="questionSearch" placeholder="Escribe palabras clave..." oninput="filterQuestions()">
+              </div>
+              
+              <div class="form-group">
+                <label for="categoryFilter">Filtrar por categoría:</label>
+                <select id="categoryFilter" onchange="filterQuestions()">
+                  <option value="all">Todas las categorías</option>
+                  <option value="comunicacion">Comunicación</option>
+                  <option value="liderazgo">Liderazgo</option>
+                  <option value="trabajoEquipo">Trabajo en Equipo</option>
+                  <option value="habilidades">Habilidades Técnicas</option>
+                  <option value="valores">Valores Organizacionales</option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- Etiquetas de búsqueda rápida -->
+            <div class="search-tags">
+              <span class="search-tag" onclick="quickSearch('liderazgo')">Liderazgo</span>
+              <span class="search-tag" onclick="quickSearch('comunicación')">Comunicación</span>
+              <span class="search-tag" onclick="quickSearch('equipo')">Trabajo en equipo</span>
+              <span class="search-tag" onclick="quickSearch('habilidades')">Habilidades</span>
+              <span class="search-tag" onclick="quickSearch('valores')">Valores</span>
             </div>
             
             <div class="library-container" id="questionLibrary">
@@ -159,6 +595,396 @@
   </footer>
 
   <!-- Scripts de JavaScript -->
-  <script src="nueva-encuesta.js"></script>
+  <script>
+    /*
+     * LÓGICA DE LA APLICACIÓN DE ENCUESTAS
+     * Este archivo contiene toda la funcionalidad JavaScript para el formulario
+     */
+
+    // Base de datos de preguntas predefinidas organizadas por categorías
+    const questionLibraryData = [
+      // Preguntas de Comunicación
+      { id: 1, text: "¿Cómo calificarías la comunicación dentro del equipo?", category: "comunicacion", type: "scale" },
+      { id: 2, text: "¿Se comparte la información importante con todos?", category: "comunicacion", type: "yesno" },
+      { id: 3, text: "¿Qué aspectos mejorarías de la comunicación en el equipo?", category: "comunicacion", type: "text" },
+      { id: 4, text: "¿Se resuelven los conflictos de manera constructiva?", category: "comunicacion", type: "scale" },
+      { id: 5, text: "¿Existen canales de comunicación efectivos?", category: "comunicacion", type: "yesno" },
+      
+      // Preguntas de Liderazgo
+      { id: 6, text: "¿El líder proporciona retroalimentación clara y constructiva?", category: "liderazgo", type: "scale" },
+      { id: 7, text: "¿El líder reconoce los logros del equipo?", category: "liderazgo", type: "yesno" },
+      { id: 8, text: "¿Qué cualidades destacarías de tu líder?", category: "liderazgo", type: "text" },
+      { id: 9, text: "¿El líder delega responsabilidades adecuadamente?", category: "liderazgo", type: "scale" },
+      { id: 10, text: "¿El líder toma decisiones de manera efectiva?", category: "liderazgo", type: "scale" },
+      
+      // Preguntas de Trabajo en Equipo
+      { id: 11, text: "¿Los miembros del equipo colaboran efectivamente?", category: "trabajoEquipo", type: "scale" },
+      { id: 12, text: "¿Participa activamente en las reuniones de equipo?", category: "trabajoEquipo", type: "yesno" },
+      { id: 13, text: "¿Cómo podríamos mejorar el trabajo en equipo?", category: "trabajoEquipo", type: "text" },
+      { id: 14, text: "¿Existe confianza entre los miembros del equipo?", category: "trabajoEquipo", type: "scale" },
+      { id: 15, text: "¿Se fomenta un ambiente de colaboración?", category: "trabajoEquipo", type: "yesno" },
+      
+      // Preguntas de Habilidades Técnicas
+      { id: 16, text: "¿Posee las habilidades técnicas necesarias para su puesto?", category: "habilidades", type: "scale" },
+      { id: 17, text: "¿Está satisfecho con las oportunidades de desarrollo?", category: "habilidades", type: "yesno" },
+      { id: 18, text: "¿Qué habilidades te gustaría desarrollar?", category: "habilidades", type: "text" },
+      { id: 19, text: "¿Mantiene sus conocimientos actualizados?", category: "habilidades", type: "scale" },
+      { id: 20, text: "¿Aplica sus conocimientos de manera efectiva?", category: "habilidades", type: "scale" },
+      
+      // Preguntas de Valores Organizacionales
+      { id: 21, text: "¿Muestra compromiso con los valores de la organización?", category: "valores", type: "scale" },
+      { id: 22, text: "¿Respeta la diversidad de opiniones y personas?", category: "valores", type: "yesno" },
+      { id: 23, text: "¿Qué valores consideras que debemos fortalecer?", category: "valores", type: "text" },
+      { id: 24, text: "¿Actúa con integridad en todas las situaciones?", category: "valores", type: "scale" },
+      { id: 25, text: "¿La organización promueve un ambiente ético?", category: "valores", type: "yesno" }
+    ];
+
+    // Variables globales
+    let questionCounter = 0; // Contador para IDs únicos de preguntas
+    let selectedQuestions = new Set(); // Conjunto para almacenar preguntas seleccionadas
+
+    /**
+     * Carga la biblioteca de preguntas en el contenedor correspondiente
+     * Filtra por categoría y término de búsqueda
+     */
+    function loadQuestionLibrary() {
+      const libraryContainer = document.getElementById('questionLibrary');
+      libraryContainer.innerHTML = '';
+      
+      // Obtener la categoría seleccionada y término de búsqueda
+      const category = document.getElementById('categoryFilter').value;
+      const searchTerm = document.getElementById('questionSearch').value.toLowerCase();
+      
+      // Filtrar preguntas según categoría y término de búsqueda
+      const filteredQuestions = questionLibraryData.filter(question => {
+        const categoryMatch = category === 'all' || question.category === category;
+        const searchMatch = searchTerm === '' || 
+                           question.text.toLowerCase().includes(searchTerm) || 
+                           getCategoryName(question.category).toLowerCase().includes(searchTerm);
+        return categoryMatch && searchMatch;
+      });
+      
+      // Mostrar mensaje si no hay resultados
+      if (filteredQuestions.length === 0) {
+        libraryContainer.innerHTML = '<div class="no-results">No se encontraron preguntas que coincidan con los criterios de búsqueda.</div>';
+        return;
+      }
+      
+      // Iterar sobre las preguntas filtradas y mostrarlas
+      filteredQuestions.forEach(question => {
+        const questionElement = document.createElement('div');
+        questionElement.className = 'library-item';
+        questionElement.innerHTML = `
+          <input type="checkbox" id="lib-${question.id}" value="${question.id}" onchange="toggleQuestion(${question.id})">
+          <label for="lib-${question.id}">${question.text} <small>(${getCategoryName(question.category)})</small></label>
+        `;
+        libraryContainer.appendChild(questionElement);
+      });
+    }
+
+    /**
+     * Convierte el identificador de categoría en un nombre legible
+     * @param {string} category - Identificador de la categoría
+     * @returns {string} Nombre legible de la categoría
+     */
+    function getCategoryName(category) {
+      const categories = {
+        'comunicacion': 'Comunicación',
+        'liderazgo': 'Liderazgo',
+        'trabajoEquipo': 'Trabajo en Equipo',
+        'habilidades': 'Habilidades',
+        'valores': 'Valores'
+      };
+      return categories[category] || category;
+    }
+
+    /**
+     * Filtra las preguntas mostradas según la categoría y término de búsqueda
+     */
+    function filterQuestions() {
+      loadQuestionLibrary();
+    }
+
+    /**
+     * Realiza una búsqueda rápida al hacer clic en una etiqueta
+     * @param {string} term - Término de búsqueda
+     */
+    function quickSearch(term) {
+      document.getElementById('questionSearch').value = term;
+      document.getElementById('categoryFilter').value = 'all';
+      filterQuestions();
+    }
+
+    /**
+     * Alterna la selección de una pregunta en la biblioteca
+     * @param {number} id - ID de la pregunta a seleccionar/deseleccionar
+     */
+    function toggleQuestion(id) {
+      if (selectedQuestions.has(id)) {
+        selectedQuestions.delete(id);
+      } else {
+        selectedQuestions.add(id);
+      }
+    }
+
+    /**
+     * Agrega todas las preguntas seleccionadas al formulario
+     */
+    function addSelectedQuestions() {
+      // Verificar que se hayan seleccionado preguntas
+      if (selectedQuestions.size === 0) {
+        alert('Por favor, selecciona al menos una pregunta de la biblioteca.');
+        return;
+      }
+      
+      // Iterar sobre las preguntas seleccionadas y agregarlas al formulario
+      selectedQuestions.forEach(id => {
+        const question = questionLibraryData.find(q => q.id === id);
+        if (question) {
+          addQuestionFromLibrary(question);
+        }
+      });
+      
+      // Limpiar la selección
+      selectedQuestions.clear();
+      
+      // Desmarcar todas las casillas en la interfaz
+      document.querySelectorAll('#questionLibrary input[type="checkbox"]').forEach(checkbox => {
+        checkbox.checked = false;
+      });
+      
+      // Mostrar mensaje de éxito
+      alert('Preguntas agregadas correctamente.');
+    }
+
+    /**
+     * Agrega una pregunta desde la biblioteca al formulario
+     * @param {Object} question - Objeto de pregunta con text, category y type
+     */
+    function addQuestionFromLibrary(question) {
+      questionCounter++;
+      
+      const questionsContainer = document.getElementById('questionsContainer');
+      
+      const questionDiv = document.createElement('div');
+      questionDiv.className = 'question-item';
+      questionDiv.id = `question-${questionCounter}`;
+      
+      // Crear el HTML para la pregunta
+      questionDiv.innerHTML = `
+        <span class="remove-question" onclick="removeQuestion(${questionCounter})">
+          <i class="fas fa-times"></i>
+        </span>
+        <div class="form-group">
+          <label for="question-text-${questionCounter}">Pregunta ${questionCounter}</label>
+          <input type="text" id="question-text-${questionCounter}" value="${question.text}" required>
+        </div>
+        <div class="form-group">
+          <label>Tipo de respuesta</label>
+          <select id="question-type-${questionCounter}" onchange="changeAnswerType(${questionCounter})">
+            <option value="scale" ${question.type === 'scale' ? 'selected' : ''}>Escala (1-5)</option>
+            <option value="yesno" ${question.type === 'yesno' ? 'selected' : ''}>Sí/No</option>
+            <option value="text" ${question.type === 'text' ? 'selected' : ''}>Texto abierto</option>
+            <option value="multiple">Opción múltiple</option>
+          </select>
+        </div>
+        <div id="question-options-${questionCounter}" class="options-container" style="display: none;">
+          <div class="form-group">
+            <label>Opciones</label>
+            <div class="option-list" id="option-list-${questionCounter}"></div>
+            <button type="button" class="btn small" onclick="addOption(${questionCounter})">
+              <i class="fas fa-plus"></i> Agregar Opción
+            </button>
+          </div>
+        </div>
+      `;
+      
+      questionsContainer.appendChild(questionDiv);
+      
+      // Si es de opción múltiple, mostrar el contenedor de opciones
+      if (question.type === 'multiple') {
+        changeAnswerType(questionCounter);
+      }
+    }
+
+    /**
+     * Agrega una nueva pregunta personalizada al formulario
+     */
+    function addQuestion() {
+      questionCounter++;
+      
+      const questionsContainer = document.getElementById('questionsContainer');
+      
+      const questionDiv = document.createElement('div');
+      questionDiv.className = 'question-item';
+      questionDiv.id = `question-${questionCounter}`;
+      
+      // Crear el HTML para una pregunta vacía
+      questionDiv.innerHTML = `
+        <span class="remove-question" onclick="removeQuestion(${questionCounter})">
+          <i class="fas fa-times"></i>
+        </span>
+        <div class="form-group">
+          <label for="question-text-${questionCounter}">Pregunta ${questionCounter}</label>
+          <input type="text" id="question-text-${questionCounter}" placeholder="Escribe tu pregunta aquí" required>
+        </div>
+        <div class="form-group">
+          <label>Tipo de respuesta</label>
+          <select id="question-type-${questionCounter}" onchange="changeAnswerType(${questionCounter})">
+            <option value="scale">Escala (1-5)</option>
+            <option value="yesno">Sí/No</option>
+            <option value="text">Texto abierto</option>
+            <option value="multiple">Opción múltiple</option>
+          </select>
+        </div>
+        <div id="question-options-${questionCounter}" class="options-container" style="display: none;">
+          <div class="form-group">
+            <label>Opciones</label>
+            <div class="option-list" id="option-list-${questionCounter}"></div>
+            <button type="button" class="btn small" onclick="addOption(${questionCounter})">
+              <i class="fas fa-plus"></i> Agregar Opción
+            </button>
+          </div>
+        </div>
+      `;
+      
+      questionsContainer.appendChild(questionDiv);
+    }
+
+    /**
+     * Elimina una pregunta del formulario
+     * @param {number} id - ID de la pregunta a eliminar
+     */
+    function removeQuestion(id) {
+      const questionToRemove = document.getElementById(`question-${id}`);
+      if (questionToRemove) {
+        questionToRemove.remove();
+        renumberQuestions();
+      }
+    }
+
+    /**
+     * Renumera las preguntas después de eliminar alguna
+     * para mantener una numeración consistente
+     */
+    function renumberQuestions() {
+      const questions = document.querySelectorAll('.question-item');
+      questionCounter = questions.length;
+      
+      questions.forEach((question, index) => {
+        const questionNumber = index + 1;
+        const label = question.querySelector('label');
+        if (label) {
+          label.textContent = `Pregunta ${questionNumber}`;
+        }
+      });
+    }
+
+    /**
+     * Cambia la interfaz según el tipo de respuesta seleccionado
+     * @param {number} questionId - ID de la pregunta a modificar
+     */
+    function changeAnswerType(questionId) {
+      const optionsContainer = document.getElementById(`question-options-${questionId}`);
+      const answerType = document.getElementById(`question-type-${questionId}`).value;
+      
+      if (answerType === 'multiple') {
+        optionsContainer.style.display = 'block';
+        const optionList = document.getElementById(`option-list-${questionId}`);
+        if (optionList.children.length === 0) {
+          addOption(questionId);
+          addOption(questionId);
+        }
+      } else {
+        optionsContainer.style.display = 'none';
+      }
+    }
+
+    /**
+     * Agrega una opción a una pregunta de opción múltiple
+     * @param {number} questionId - ID de la pregunta a la que agregar la opción
+     */
+    function addOption(questionId) {
+      const optionList = document.getElementById(`option-list-${questionId}`);
+      const optionCount = optionList.children.length + 1;
+      
+      const optionDiv = document.createElement('div');
+      optionDiv.className = 'option-item';
+      optionDiv.innerHTML = `
+        <input type="text" placeholder="Opción ${optionCount}" required>
+        <button type="button" class="btn small danger" onclick="removeOption(this)">
+          <i class="fas fa-times"></i>
+        </button>
+      `;
+      
+      optionList.appendChild(optionDiv);
+    }
+
+    /**
+     * Elimina una opción de una pregunta de opción múltiple
+     * @param {HTMLElement} button - Botón que activó la eliminación
+     */
+    function removeOption(button) {
+      button.parentElement.remove();
+    }
+
+    /**
+     * Cancela el formulario y regresa a la página de administración
+     */
+    function cancelForm() {
+      if (confirm('¿Estás seguro de que deseas cancelar? Los cambios no se guardarán.')) {
+        window.location.href = '../administrador/index.html';
+      }
+    }
+
+    /**
+     * Simula el cierre de sesión del usuario
+     */
+    function logout() {
+      if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+        alert('Sesión finalizada');
+        window.location.href = '../index.html';
+      }
+    }
+
+    /**
+     * Valida y envía el formulario
+     * @param {Event} e - Evento de envío del formulario
+     */
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      
+      // Validar fechas
+      const startDate = new Date(document.getElementById('startDate').value);
+      const endDate = new Date(document.getElementById('endDate').value);
+      
+      if (endDate < startDate) {
+        alert('La fecha de fin no puede ser anterior a la fecha de inicio');
+        return;
+      }
+      
+      // Validar que haya al menos una pregunta
+      if (questionCounter === 0) {
+        alert('Debes agregar al menos una pregunta');
+        return;
+      }
+      
+      // Simular guardado (en una aplicación real, aquí se enviarían los datos al servidor)
+      alert('Encuesta guardada correctamente');
+      window.location.href = '../administrador/index.html';
+    }
+
+    // Inicializar la aplicación cuando se cargue la página
+    window.onload = function() {
+      // Cargar la biblioteca de preguntas
+      loadQuestionLibrary();
+      
+      // Agregar un event listener para el envío del formulario
+      document.getElementById('surveyForm').addEventListener('submit', handleFormSubmit);
+      
+      // Agregar una pregunta inicial al cargar
+      addQuestion();
+    };
+  </script>
 </body>
 </html>

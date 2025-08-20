@@ -311,7 +311,7 @@ function removeOption(button) {
  */
 function cancelForm() {
   if (confirm('¿Estás seguro de que deseas cancelar? Los cambios no se guardarán.')) {
-    window.location.href = '../administrator/index.html';
+    window.location.href = '../administrador/index.html';
   }
 }
 
