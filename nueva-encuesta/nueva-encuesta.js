@@ -4,7 +4,7 @@
  */
 
 // Base de datos de preguntas predefinidas organizadas por categorías
-const questionLibrary = [
+const questionLibraryData = [
   // Preguntas de Comunicación
   { id: 1, text: "¿Cómo calificarías la comunicación dentro del equipo?", category: "comunicacion", type: "scale" },
   { id: 2, text: "¿Se comparte la información importante con todos?", category: "comunicacion", type: "yesno" },
@@ -41,39 +41,65 @@ const questionLibrary = [
   { id: 25, text: "¿La organización promueve un ambiente ético?", category: "valores", type: "yesno" }
 ];
 
+// Base de datos de personas disponibles para asignar encuestas
+const individualsDatabase = [
+  { id: 1, name: "Juan Pérez", department: "Ventas", email: "juan.perez@empresa.com" },
+  { id: 2, name: "María García", department: "Ventas", email: "maria.garcia@empresa.com" },
+  { id: 3, name: "Carlos López", department: "TI", email: "carlos.lopez@empresa.com" },
+  { id: 4, name: "Ana Martínez", department: "TI", email: "ana.martinez@empresa.com" },
+  { id: 5, name: "Pedro Rodríguez", department: "RH", email: "pedro.rodriguez@empresa.com" },
+  { id: 6, name: "Laura Hernández", department: "RH", email: "laura.hernandez@empresa.com" },
+  { id: 7, name: "Miguel Díaz", department: "Gerencia", email: "miguel.diaz@empresa.com" },
+  { id: 8, name: "Sofía Ruiz", department: "Gerencia", email: "sofia.ruiz@empresa.com" },
+  { id: 9, name: "Jorge Sánchez", department: "Ventas", email: "jorge.sanchez@empresa.com" },
+  { id: 10, name: "Elena Castro", department: "TI", email: "elena.castro@empresa.com" }
+];
+
+
 // Variables globales
-let questionCounter = 0; // Contador para IDs únicos de preguntas
-let selectedQuestions = new Set(); // Conjunto para almacenar preguntas seleccionadas
+let questionCounter = 0;
+let selectedQuestions = new Set();
+let surveyTemplates = JSON.parse(localStorage.getItem('surveyTemplates')) || [];
+let selectedIndividuals = [];
 
 /**
  * Carga la biblioteca de preguntas en el contenedor correspondiente
- * Filtra por categoría si se ha seleccionado alguna
  */
 function loadQuestionLibrary() {
   const libraryContainer = document.getElementById('questionLibrary');
+  if (!libraryContainer) return;
+  
   libraryContainer.innerHTML = '';
   
-  // Obtener la categoría seleccionada para filtrar
   const category = document.getElementById('categoryFilter').value;
+  const searchTerm = document.getElementById('questionSearch').value.toLowerCase();
   
-  // Iterar sobre todas las preguntas y mostrar solo las de la categoría seleccionada
-  questionLibrary.forEach(question => {
-    if (category === 'all' || question.category === category) {
-      const questionElement = document.createElement('div');
-      questionElement.className = 'library-item';
-      questionElement.innerHTML = `
-        <input type="checkbox" id="lib-${question.id}" value="${question.id}" onchange="toggleQuestion(${question.id})">
-        <label for="lib-${question.id}">${question.text} <small>(${getCategoryName(question.category)})</small></label>
-      `;
-      libraryContainer.appendChild(questionElement);
-    }
+  const filteredQuestions = questionLibraryData.filter(question => {
+    const categoryMatch = category === 'all' || question.category === category;
+    const searchMatch = searchTerm === '' || 
+                       question.text.toLowerCase().includes(searchTerm) || 
+                       getCategoryName(question.category).toLowerCase().includes(searchTerm);
+    return categoryMatch && searchMatch;
+  });
+  
+  if (filteredQuestions.length === 0) {
+    libraryContainer.innerHTML = '<div class="no-results">No se encontraron preguntas que coincidan con los criterios de búsqueda.</div>';
+    return;
+  }
+  
+  filteredQuestions.forEach(question => {
+    const questionElement = document.createElement('div');
+    questionElement.className = 'library-item';
+    questionElement.innerHTML = `
+      <input type="checkbox" id="lib-${question.id}" value="${question.id}" onchange="toggleQuestion(${question.id})">
+      <label for="lib-${question.id}">${question.text} <small>(${getCategoryName(question.category)})</small></label>
+    `;
+    libraryContainer.appendChild(questionElement);
   });
 }
 
 /**
  * Convierte el identificador de categoría en un nombre legible
- * @param {string} category - Identificador de la categoría
- * @returns {string} Nombre legible de la categoría
  */
 function getCategoryName(category) {
   const categories = {
@@ -87,15 +113,23 @@ function getCategoryName(category) {
 }
 
 /**
- * Filtra las preguntas mostradas según la categoría seleccionada
+ * Filtra las preguntas mostradas según la categoría y término de búsqueda
  */
 function filterQuestions() {
   loadQuestionLibrary();
 }
 
 /**
+ * Realiza una búsqueda rápida al hacer clic en una etiqueta
+ */
+function quickSearch(term) {
+  document.getElementById('questionSearch').value = term;
+  document.getElementById('categoryFilter').value = 'all';
+  filterQuestions();
+}
+
+/**
  * Alterna la selección de una pregunta en la biblioteca
- * @param {number} id - ID de la pregunta a seleccionar/deseleccionar
  */
 function toggleQuestion(id) {
   if (selectedQuestions.has(id)) {
@@ -109,46 +143,37 @@ function toggleQuestion(id) {
  * Agrega todas las preguntas seleccionadas al formulario
  */
 function addSelectedQuestions() {
-  // Verificar que se hayan seleccionado preguntas
   if (selectedQuestions.size === 0) {
     alert('Por favor, selecciona al menos una pregunta de la biblioteca.');
     return;
   }
   
-  // Iterar sobre las preguntas seleccionadas y agregarlas al formulario
   selectedQuestions.forEach(id => {
-    const question = questionLibrary.find(q => q.id === id);
+    const question = questionLibraryData.find(q => q.id === id);
     if (question) {
       addQuestionFromLibrary(question);
     }
   });
   
-  // Limpiar la selección
   selectedQuestions.clear();
-  
-  // Desmarcar todas las casillas en la interfaz
   document.querySelectorAll('#questionLibrary input[type="checkbox"]').forEach(checkbox => {
     checkbox.checked = false;
   });
   
-  // Mostrar mensaje de éxito
   alert('Preguntas agregadas correctamente.');
 }
 
 /**
  * Agrega una pregunta desde la biblioteca al formulario
- * @param {Object} question - Objeto de pregunta con text, category y type
  */
 function addQuestionFromLibrary(question) {
   questionCounter++;
   
   const questionsContainer = document.getElementById('questionsContainer');
-  
   const questionDiv = document.createElement('div');
   questionDiv.className = 'question-item';
   questionDiv.id = `question-${questionCounter}`;
   
-  // Crear el HTML para la pregunta
   questionDiv.innerHTML = `
     <span class="remove-question" onclick="removeQuestion(${questionCounter})">
       <i class="fas fa-times"></i>
@@ -179,7 +204,6 @@ function addQuestionFromLibrary(question) {
   
   questionsContainer.appendChild(questionDiv);
   
-  // Si es de opción múltiple, mostrar el contenedor de opciones
   if (question.type === 'multiple') {
     changeAnswerType(questionCounter);
   }
@@ -192,12 +216,10 @@ function addQuestion() {
   questionCounter++;
   
   const questionsContainer = document.getElementById('questionsContainer');
-  
   const questionDiv = document.createElement('div');
   questionDiv.className = 'question-item';
   questionDiv.id = `question-${questionCounter}`;
   
-  // Crear el HTML para una pregunta vacía
   questionDiv.innerHTML = `
     <span class="remove-question" onclick="removeQuestion(${questionCounter})">
       <i class="fas fa-times"></i>
@@ -231,7 +253,6 @@ function addQuestion() {
 
 /**
  * Elimina una pregunta del formulario
- * @param {number} id - ID de la pregunta a eliminar
  */
 function removeQuestion(id) {
   const questionToRemove = document.getElementById(`question-${id}`);
@@ -243,7 +264,6 @@ function removeQuestion(id) {
 
 /**
  * Renumera las preguntas después de eliminar alguna
- * para mantener una numeración consistente
  */
 function renumberQuestions() {
   const questions = document.querySelectorAll('.question-item');
@@ -260,7 +280,6 @@ function renumberQuestions() {
 
 /**
  * Cambia la interfaz según el tipo de respuesta seleccionado
- * @param {number} questionId - ID de la pregunta a modificar
  */
 function changeAnswerType(questionId) {
   const optionsContainer = document.getElementById(`question-options-${questionId}`);
@@ -280,7 +299,6 @@ function changeAnswerType(questionId) {
 
 /**
  * Agrega una opción a una pregunta de opción múltiple
- * @param {number} questionId - ID de la pregunta a la que agregar la opción
  */
 function addOption(questionId) {
   const optionList = document.getElementById(`option-list-${questionId}`);
@@ -300,10 +318,315 @@ function addOption(questionId) {
 
 /**
  * Elimina una opción de una pregunta de opción múltiple
- * @param {HTMLElement} button - Botón que activó la eliminación
  */
 function removeOption(button) {
   button.parentElement.remove();
+}
+
+/**
+ * Guarda la encuesta actual como plantilla
+ */
+function saveAsTemplate() {
+  const surveyName = document.getElementById('surveyName').value;
+  if (!surveyName) {
+    alert('Por favor, ingresa un nombre para la encuesta antes de guardarla como plantilla.');
+    return;
+  }
+  
+  const questions = gatherQuestionsData();
+  if (questions.length === 0) {
+    alert('La plantilla debe contener al menos una pregunta.');
+    return;
+  }
+  
+  const participantsType = document.querySelector('input[name="participantsType"]:checked').value;
+  let participantsData = [];
+  
+  if (participantsType === 'departments') {
+    // Obtener departamentos seleccionados (usando checkbox)
+    const deptCheckboxes = document.querySelectorAll('input[name="departments"]:checked');
+    participantsData = Array.from(deptCheckboxes).map(checkbox => ({
+      type: 'department',
+      name: checkbox.value
+    }));
+    
+    if (participantsData.length === 0) {
+      alert('Debes seleccionar al menos un departamento.');
+      return;
+    }
+  } else {
+    // Obtener individuos seleccionados
+    participantsData = selectedIndividuals.map(ind => ({
+      type: 'individual',
+      id: ind.id,
+      name: ind.name,
+      department: ind.department,
+      email: ind.email
+    }));
+    
+    if (participantsData.length === 0) {
+      alert('Debes seleccionar al menos una persona.');
+      return;
+    }
+  }
+  
+  const surveyData = {
+    id: Date.now(),
+    name: surveyName,
+    description: document.getElementById('surveyDescription').value,
+    evalType: document.querySelector('input[name="evalType"]:checked').value,
+    participantsType: participantsType,
+    participants: participantsData,
+    questions: questions,
+    createdAt: new Date().toISOString(),
+    questionCount: questions.length
+  };
+  
+  // Obtener plantillas existentes o inicializar array vacío
+  surveyTemplates = JSON.parse(localStorage.getItem('surveyTemplates')) || [];
+  
+  // Verificar si ya existe una plantilla con el mismo nombre
+  const existingIndex = surveyTemplates.findIndex(t => t.name === surveyName);
+  if (existingIndex !== -1) {
+    if (!confirm(`Ya existe una plantilla llamada "${surveyName}". ¿Deseas reemplazarla?`)) {
+      return;
+    }
+    surveyTemplates[existingIndex] = surveyData;
+  } else {
+    surveyTemplates.push(surveyData);
+  }
+  
+  // Guardar en localStorage
+  localStorage.setItem('surveyTemplates', JSON.stringify(surveyTemplates));
+  
+  // Actualizar la variable global
+  surveyTemplates = JSON.parse(localStorage.getItem('surveyTemplates')) || [];
+  
+  alert(`Plantilla "${surveyName}" guardada correctamente con ${questions.length} preguntas.`);
+  
+  // Si estamos en la página de plantillas, recargar la visualización
+  if (window.location.pathname.includes('plantillas.html')) {
+    loadTemplates();
+  }
+}
+
+/**
+ * Recopila los datos de todas las preguntas del formulario
+ */
+function gatherQuestionsData() {
+  const questions = [];
+  document.querySelectorAll('.question-item').forEach(questionEl => {
+    const questionText = questionEl.querySelector('input[type="text"]').value;
+    const questionType = questionEl.querySelector('select').value;
+    
+    if (questionText.trim()) {
+      const questionData = {
+        text: questionText,
+        type: questionType
+      };
+      
+      if (questionType === 'multiple') {
+        questionData.options = gatherOptionsData(questionEl);
+      }
+      
+      questions.push(questionData);
+    }
+  });
+  return questions;
+}
+
+/**
+ * Recopila las opciones de una pregunta de opción múltiple
+ */
+function gatherOptionsData(questionEl) {
+  const options = [];
+  questionEl.querySelectorAll('.option-item input').forEach(optionInput => {
+    if (optionInput.value.trim()) {
+      options.push(optionInput.value);
+    }
+  });
+  return options;
+}
+
+/**
+ * Carga las plantillas en la página de plantillas
+ */
+function loadTemplates() {
+  const templatesContainer = document.getElementById('templatesContainer');
+  const noTemplatesMessage = document.getElementById('noTemplatesMessage');
+  
+  if (!templatesContainer) return;
+  
+  templatesContainer.innerHTML = '';
+  
+  if (surveyTemplates.length === 0) {
+    noTemplatesMessage.style.display = 'block';
+    return;
+  }
+  
+  noTemplatesMessage.style.display = 'none';
+  
+  surveyTemplates.forEach((template, index) => {
+    const participantsText = template.participantsType === 'departments' 
+      ? `${template.participants.length} departamentos` 
+      : `${template.participants.length} personas`;
+    
+    const templateCard = document.createElement('div');
+    templateCard.className = 'template-card';
+    templateCard.innerHTML = `
+      <h3>${template.name}</h3>
+      <p>${template.description || 'Sin descripción'}</p>
+      <div class="template-meta">
+        <span>Creada: ${new Date(template.createdAt).toLocaleDateString()}</span>
+      </div>
+      <div class="template-stats">
+        <span><i class="fas fa-question"></i> ${template.questionCount} preguntas</span>
+        <span><i class="fas fa-chart-pie"></i> ${template.evalType}°</span>
+        <span><i class="fas fa-users"></i> ${participantsText}</span>
+      </div>
+      <div class="template-actions">
+        <button onclick="useTemplate(${index})" class="btn success small">
+          <i class="fas fa-play"></i> Usar
+        </button>
+        <button onclick="editTemplate(${index})" class="btn info small">
+          <i class="fas fa-edit"></i> Editar
+        </button>
+        <button onclick="deleteTemplate(${index})" class="btn danger small">
+          <i class="fas fa-trash"></i> Eliminar
+        </button>
+      </div>
+    `;
+    templatesContainer.appendChild(templateCard);
+  });
+}
+
+/**
+ * Usa una plantilla existente
+ */
+function useTemplate(templateIndex) {
+  const template = surveyTemplates[templateIndex];
+  
+  // Redirigir a la página de nueva encuesta con parámetros
+  window.location.href = `index.html?template=${templateIndex}`;
+}
+
+/**
+ * Carga una plantilla en el formulario
+ */
+function loadTemplateIntoForm(templateIndex) {
+  const template = surveyTemplates[templateIndex];
+  
+  document.getElementById('surveyName').value = template.name + ' - Copia';
+  document.getElementById('surveyDescription').value = template.description || '';
+  
+  // Seleccionar el tipo de evaluación
+  document.querySelector(`input[name="evalType"][value="${template.evalType}"]`).checked = true;
+  
+  // Configurar participantes según el tipo
+  if (template.participantsType) {
+    document.querySelector(`input[name="participantsType"][value="${template.participantsType}"]`).checked = true;
+    toggleParticipantsSelection();
+    
+    if (template.participantsType === 'departments') {
+      // Seleccionar departamentos
+      const deptSelect = document.getElementById('departments');
+      Array.from(deptSelect.options).forEach(option => {
+        option.selected = template.participants.some(p => p.name === option.value);
+      });
+    } else {
+      // Cargar individuos seleccionados
+      selectedIndividuals = template.participants.map(p => ({
+        id: p.id,
+        name: p.name,
+        department: p.department,
+        email: p.email
+      }));
+      renderSelectedIndividuals();
+      loadIndividuals(); // Para actualizar checkboxes
+    }
+  }
+  
+  // Limpiar preguntas existentes
+  document.getElementById('questionsContainer').innerHTML = '';
+  questionCounter = 0;
+  
+  // Agregar preguntas de la plantilla
+  template.questions.forEach(question => {
+    questionCounter++;
+    
+    const questionDiv = document.createElement('div');
+    questionDiv.className = 'question-item';
+    questionDiv.id = `question-${questionCounter}`;
+    
+    let optionsHTML = '';
+    if (question.type === 'multiple' && question.options) {
+      optionsHTML = `
+        <div id="question-options-${questionCounter}" class="options-container">
+          <div class="form-group">
+            <label>Opciones</label>
+            <div class="option-list" id="option-list-${questionCounter}">
+              ${question.options.map(option => `
+                <div class="option-item">
+                  <input type="text" value="${option}" required>
+                  <button type="button" class="btn small danger" onclick="removeOption(this)">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              `).join('')}
+            </div>
+            <button type="button" class="btn small" onclick="addOption(${questionCounter})">
+              <i class="fas fa-plus"></i> Agregar Opción
+            </button>
+          </div>
+        </div>
+      `;
+    }
+    
+    questionDiv.innerHTML = `
+      <span class="remove-question" onclick="removeQuestion(${questionCounter})">
+        <i class="fas fa-times"></i>
+      </span>
+      <div class="form-group">
+        <label for="question-text-${questionCounter}">Pregunta ${questionCounter}</label>
+        <input type="text" id="question-text-${questionCounter}" value="${question.text}" required>
+      </div>
+      <div class="form-group">
+        <label>Tipo de respuesta</label>
+        <select id="question-type-${questionCounter}" onchange="changeAnswerType(${questionCounter})">
+          <option value="scale" ${question.type === 'scale' ? 'selected' : ''}>Escala (1-5)</option>
+          <option value="yesno" ${question.type === 'yesno' ? 'selected' : ''}>Sí/No</option>
+          <option value="text" ${question.type === 'text' ? 'selected' : ''}>Texto abierto</option>
+          <option value="multiple" ${question.type === 'multiple' ? 'selected' : ''}>Opción múltiple</option>
+        </select>
+      </div>
+      ${optionsHTML}
+    `;
+    
+    document.getElementById('questionsContainer').appendChild(questionDiv);
+  });
+  
+  alert(`Plantilla "${template.name}" cargada. Puedes modificarla antes de guardar.`);
+}
+
+/**
+ * Edita una plantilla existente
+ */
+function editTemplate(templateIndex) {
+  if (confirm('¿Editar esta plantilla? Se abrirá en modo de edición.')) {
+    window.location.href = `index.html?editTemplate=${templateIndex}`;
+  }
+}
+
+/**
+ * Elimina una plantilla
+ */
+function deleteTemplate(templateIndex) {
+  if (confirm('¿Estás seguro de que deseas eliminar esta plantilla? Esta acción no se puede deshacer.')) {
+    surveyTemplates.splice(templateIndex, 1);
+    localStorage.setItem('surveyTemplates', JSON.stringify(surveyTemplates));
+    loadTemplates();
+    alert('Plantilla eliminada correctamente.');
+  }
 }
 
 /**
@@ -327,12 +650,13 @@ function logout() {
 
 /**
  * Valida y envía el formulario
- * @param {Event} e - Evento de envío del formulario
+ */
+/**
+ * Valida y envía el formulario
  */
 function handleFormSubmit(e) {
   e.preventDefault();
   
-  // Validar fechas
   const startDate = new Date(document.getElementById('startDate').value);
   const endDate = new Date(document.getElementById('endDate').value);
   
@@ -341,25 +665,256 @@ function handleFormSubmit(e) {
     return;
   }
   
-  // Validar que haya al menos una pregunta
   if (questionCounter === 0) {
     alert('Debes agregar al menos una pregunta');
     return;
   }
   
-  // Simular guardado (en una aplicación real, aquí se enviarían los datos al servidor)
-  alert('Encuesta guardada correctamente');
+  const participantsType = document.querySelector('input[name="participantsType"]:checked').value;
+  
+  if (participantsType === 'departments') {
+    const selectedDepartments = document.querySelectorAll('input[name="departments"]:checked');
+    if (selectedDepartments.length === 0) {
+      alert('Debes seleccionar al menos un departamento');
+      return;
+    }
+  } else {
+    if (selectedIndividuals.length === 0) {
+      alert('Debes seleccionar al menos una persona');
+      return;
+    }
+  }
+  
+  // Aquí iría el código para guardar en base de datos real
+  alert('Encuesta guardada y asignada correctamente');
   window.location.href = '../administrador/index.html';
 }
 
-// Inicializar la aplicación cuando se cargue la página
-window.onload = function() {
+/**
+ * Alterna entre la selección por departamentos y por individuos
+ */
+function toggleParticipantsSelection() {
+  const participantsType = document.querySelector('input[name="participantsType"]:checked').value;
+  const departmentSelection = document.getElementById('departmentSelection');
+  const individualSelection = document.getElementById('individualSelection');
+  
+  if (participantsType === 'departments') {
+    departmentSelection.style.display = 'block';
+    individualSelection.style.display = 'none';
+  } else {
+    departmentSelection.style.display = 'none';
+    individualSelection.style.display = 'block';
+    loadIndividuals();
+    renderSelectedIndividuals();
+  }
+}
+
+/**
+ * Carga la lista de individuos disponibles
+ */
+function loadIndividuals() {
+  const individualsContainer = document.getElementById('individualsContainer');
+  if (!individualsContainer) return;
+  
+  individualsContainer.innerHTML = '';
+  
+  const searchTerm = document.getElementById('individualSearch').value.toLowerCase();
+  
+  const filteredIndividuals = individualsDatabase.filter(individual => {
+    const searchMatch = searchTerm === '' || 
+                       individual.name.toLowerCase().includes(searchTerm) || 
+                       individual.department.toLowerCase().includes(searchTerm) ||
+                       individual.email.toLowerCase().includes(searchTerm);
+    return searchMatch;
+  });
+  
+  if (filteredIndividuals.length === 0) {
+    individualsContainer.innerHTML = '<div class="no-results">No se encontraron personas que coincidan con la búsqueda.</div>';
+    return;
+  }
+  
+  filteredIndividuals.forEach(individual => {
+    const isSelected = selectedIndividuals.some(sel => sel.id === individual.id);
+    const individualElement = document.createElement('div');
+    individualElement.className = 'individual-item';
+    individualElement.innerHTML = `
+      <input type="checkbox" id="ind-${individual.id}" value="${individual.id}" 
+             ${isSelected ? 'checked' : ''} onchange="toggleIndividual(${individual.id})">
+      <label for="ind-${individual.id}">
+        <strong>${individual.name}</strong> - ${individual.department}<br>
+        <small>${individual.email}</small>
+      </label>
+    `;
+    individualsContainer.appendChild(individualElement);
+  });
+}
+
+/**
+ * Filtra la lista de individuos según el término de búsqueda
+ */
+function filterIndividuals() {
+  loadIndividuals();
+}
+
+/**
+ * Realiza una búsqueda rápida de individuos por departamento
+ */
+function quickIndividualSearch(department) {
+  document.getElementById('individualSearch').value = department;
+  filterIndividuals();
+}
+
+/**
+ * Alterna la selección de un individuo
+ */
+function toggleIndividual(id) {
+  const individual = individualsDatabase.find(ind => ind.id === id);
+  if (!individual) return;
+
+  // Verificar si ya está seleccionado
+  const existingIndex = selectedIndividuals.findIndex(ind => ind.id === id);
+  
+  if (existingIndex === -1) {
+    // Agregar a seleccionados
+    selectedIndividuals.push({...individual});
+  } else {
+    // Quitar de seleccionados
+    selectedIndividuals.splice(existingIndex, 1);
+  }
+  
+  renderSelectedIndividuals();
+  updateIndividualCheckboxes();
+}
+
+/**
+ * Actualiza el estado de los checkboxes según las personas seleccionadas
+ */
+function updateIndividualCheckboxes() {
+  individualsDatabase.forEach(individual => {
+    const checkbox = document.getElementById(`ind-${individual.id}`);
+    if (checkbox) {
+      checkbox.checked = selectedIndividuals.some(sel => sel.id === individual.id);
+    }
+  });
+}
+
+/**
+ * Renderiza la lista de individuos seleccionados
+ */
+function renderSelectedIndividuals() {
+  const selectedContainer = document.getElementById('selectedIndividuals');
+  const noSelectedMessage = document.getElementById('noSelectedMessage');
+  
+  if (!selectedContainer) return;
+  
+  if (selectedIndividuals.length === 0) {
+    if (noSelectedMessage) noSelectedMessage.style.display = 'block';
+    selectedContainer.innerHTML = '';
+    return;
+  }
+  
+  if (noSelectedMessage) noSelectedMessage.style.display = 'none';
+  
+  let html = '';
+  selectedIndividuals.forEach(individual => {
+    html += `
+      <div class="selected-individual" data-id="${individual.id}">
+        <div class="selected-individual-info">
+          <strong>${individual.name}</strong> - ${individual.department}
+          <br>
+          <small>${individual.email}</small>
+        </div>
+        <button type="button" class="btn small danger" onclick="removeIndividual(${individual.id})">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    `;
+  });
+  
+  selectedContainer.innerHTML = html;
+}
+
+
+/**
+ * Elimina un individuo de la lista de seleccionados
+ */
+function removeIndividual(id) {
+  const index = selectedIndividuals.findIndex(ind => ind.id === id);
+  if (index !== -1) {
+    selectedIndividuals.splice(index, 1);
+    renderSelectedIndividuals();
+    updateIndividualCheckboxes();
+  }
+}
+
+
+/**
+ * Inicializa la aplicación
+ */
+function initApp() {
   // Cargar la biblioteca de preguntas
   loadQuestionLibrary();
   
-  // Agregar un event listener para el envío del formulario
-  document.getElementById('surveyForm').addEventListener('submit', handleFormSubmit);
+  // Configurar el formulario
+  const surveyForm = document.getElementById('surveyForm');
+  if (surveyForm) {
+    surveyForm.addEventListener('submit', handleFormSubmit);
+  }
   
-  // Agregar una pregunta inicial al cargar
-  addQuestion();
-};
+  // Inicializar la lista de personas seleccionadas
+  selectedIndividuals = [];
+  
+  // Verificar si hay parámetros de URL para cargar plantilla
+  const urlParams = new URLSearchParams(window.location.search);
+  const templateIndex = urlParams.get('template');
+  const editTemplateIndex = urlParams.get('editTemplate');
+  
+  if (templateIndex !== null) {
+    loadTemplateIntoForm(parseInt(templateIndex));
+  } else if (editTemplateIndex !== null) {
+    // Modo edición de plantilla
+    const template = surveyTemplates[parseInt(editTemplateIndex)];
+    document.getElementById('surveyName').value = template.name;
+    document.getElementById('surveyDescription').value = template.description || '';
+    document.querySelector(`input[name="evalType"][value="${template.evalType}"]`).checked = true;
+    
+    // Configurar tipo de participantes si existe en la plantilla
+    if (template.participantsType) {
+      document.querySelector(`input[name="participantsType"][value="${template.participantsType}"]`).checked = true;
+      toggleParticipantsSelection();
+      
+      // Cargar individuos seleccionados si es una plantilla de individuos
+      if (template.participantsType === 'individuals') {
+        selectedIndividuals = template.participants.map(p => ({
+          id: p.id,
+          name: p.name,
+          department: p.department,
+          email: p.email
+        }));
+        // Renderizar después de un breve delay para asegurar que el DOM esté listo
+        setTimeout(() => {
+          renderSelectedIndividuals();
+          updateIndividualCheckboxes();
+        }, 100);
+      }
+    }
+    
+    loadTemplateIntoForm(parseInt(editTemplateIndex));
+  } else {
+    // Modo nueva encuesta - agregar pregunta inicial
+    addQuestion();
+  }
+  
+  // Cargar plantillas si estamos en la página de plantillas
+  if (typeof loadTemplates === 'function') {
+    loadTemplates();
+  }
+  
+  // Renderizar personas seleccionadas si estamos en el formulario
+  if (document.getElementById('selectedIndividuals')) {
+    renderSelectedIndividuals();
+  }
+}
+
+// Inicializar cuando se cargue la página
+window.onload = initApp;

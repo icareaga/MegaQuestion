@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEGA - Plantillas de Encuestas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Cabecera de la aplicación -->
+  <header class="header">
+    <div class="header-content">
+      <a href="../index.html" class="logo-link">
+        <img src="../img/Logo.jpg" alt="MEGA Logo" class="mega-logo">
+      </a>
+      <h2 class="mega-subtitle">MegaQuestion - Plantillas</h2>
+    </div>
+    <div class="user-menu">
+      <span class="username">Admin User</span>
+      <button class="btn logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Salir
+      </button>
+    </div>
+  </header>
+
+  <!-- Contenedor principal -->
+  <div class="main-container">
+    <main class="main-content">
+      <div class="welcome-section">
+        <h1>Plantillas de Encuestas</h1>
+        <div class="breadcrumb">
+          <a href="../administrador/index.html">Administración</a> / 
+          <a href="index.html">Nueva Encuesta</a> / 
+          Plantillas
+        </div>
+      </div>
+
+      <!-- Acciones rápidas -->
+      <div class="quick-actions">
+        <button type="button" class="btn success" onclick="window.location.href='index.html'">
+          <i class="fas fa-plus"></i> Crear Nueva Plantilla
+        </button>
+        <button type="button" class="btn" onclick="clearAllTemplates()">
+          <i class="fas fa-trash"></i> Eliminar Todas
+        </button>
+      </div>
+
+      <!-- Contenedor de plantillas -->
+      <section class="form-section">
+        <h2><i class="fas fa-clone"></i> Plantillas Guardadas</h2>
+        
+        <div class="search-container">
+          <div class="form-group search-input">
+            <label for="templateSearch">Buscar plantillas:</label>
+            <input type="search" id="templateSearch" placeholder="Buscar por nombre..." oninput="filterTemplates()">
+          </div>
+          
+          <div class="form-group">
+            <label for="sortTemplates">Ordenar por:</label>
+            <select id="sortTemplates" onchange="loadTemplates()">
+              <option value="newest">Más recientes primero</option>
+              <option value="oldest">Más antiguas primero</option>
+              <option value="name">Por nombre</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="template-stats">
+          <span id="templateCount">Total: 0 plantillas</span>
+        </div>
+
+        <div id="templatesContainer" class="templates-grid">
+          <!-- Las plantillas se cargarán aquí dinámicamente -->
+        </div>
+
+        <div id="noTemplatesMessage" class="no-results">
+          <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+          <h3>No hay plantillas guardadas</h3>
+          <p>Crea tu primera plantilla para empezar a usarla en tus encuestas</p>
+          <button class="btn success" onclick="window.location.href='index.html'">
+            <i class="fas fa-plus"></i> Crear Primera Plantilla
+          </button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Pie de página -->
+  <footer class="footer">
+    <p class="copyright">Derechos Reservados <br>
+      Desarrollado por Equipo UTOE <br>
+      MEGA @Copy 2025</p>
+  </footer>
+
+  <!-- Scripts de JavaScript -->
+  <script>
+    // Variables globales
+    let surveyTemplates = [];
+    
+    // Cargar plantillas al iniciar la página
+    document.addEventListener('DOMContentLoaded', function() {
+      loadTemplates();
+    });
+    
+    /**
+     * Carga las plantillas desde localStorage
+     */
+    function loadTemplates() {
+      const templatesContainer = document.getElementById('templatesContainer');
+      const noTemplatesMessage = document.getElementById('noTemplatesMessage');
+      const templateCount = document.getElementById('templateCount');
+      
+      // Obtener plantillas de localStorage
+      surveyTemplates = JSON.parse(localStorage.getItem('surveyTemplates')) || [];
+      
+      // Actualizar contador
+      templateCount.textContent = `Total: ${surveyTemplates.length} plantilla${surveyTemplates.length !== 1 ? 's' : ''}`;
+      
+      // Obtener criterios de ordenamiento y búsqueda
+      const sortBy = document.getElementById('sortTemplates').value;
+      const searchTerm = document.getElementById('templateSearch').value.toLowerCase();
+      
+      // Filtrar y ordenar plantillas
+      let filteredTemplates = surveyTemplates.filter(template => {
+        return template.name.toLowerCase().includes(searchTerm);
+      });
+      
+      // Ordenar plantillas
+      filteredTemplates.sort((a, b) => {
+        switch(sortBy) {
+          case 'newest':
+            return new Date(b.createdAt) - new Date(a.createdAt);
+          case 'oldest':
+            return new Date(a.createdAt) - new Date(b.createdAt);
+          case 'name':
+            return a.name.localeCompare(b.name);
+          default:
+            return 0;
+        }
+      });
+      
+      templatesContainer.innerHTML = '';
+      
+      if (filteredTemplates.length === 0) {
+        noTemplatesMessage.style.display = 'block';
+        return;
+      }
+      
+      noTemplatesMessage.style.display = 'none';
+      
+      filteredTemplates.forEach((template, index) => {
+        const originalIndex = surveyTemplates.findIndex(t => t.id === template.id);
+        const participantsText = template.participantsType === 'departments' 
+          ? `${template.participants.length} departamentos` 
+          : `${template.participants.length} personas`;
+        
+        const templateCard = document.createElement('div');
+        templateCard.className = 'template-card';
+        templateCard.innerHTML = `
+          <h3>${template.name}</h3>
+          <p>${template.description || 'Sin descripción'}</p>
+          <div class="template-meta">
+            <span>Creada: ${new Date(template.createdAt).toLocaleDateString()}</span>
+            <span>${participantsText}</span>
+          </div>
+          <div class="template-stats">
+            <span><i class="fas fa-question"></i> ${template.questionCount} preguntas</span>
+            <span><i class="fas fa-chart-pie"></i> ${template.evalType}°</span>
+          </div>
+          <div class="template-actions">
+            <button onclick="useTemplate(${originalIndex})" class="btn success small">
+              <i class="fas fa-play"></i> Usar
+            </button>
+            <button onclick="editTemplate(${originalIndex})" class="btn info small">
+              <i class="fas fa-edit"></i> Editar
+            </button>
+            <button onclick="deleteTemplate(${originalIndex})" class="btn danger small">
+              <i class="fas fa-trash"></i> Eliminar
+            </button>
+          </div>
+        `;
+        templatesContainer.appendChild(templateCard);
+      });
+    }
+    
+    /**
+     * Filtra plantillas según el término de búsqueda
+     */
+    function filterTemplates() {
+      loadTemplates();
+    }
+    
+    /**
+     * Usa una plantilla existente
+     */
+    function useTemplate(templateIndex) {
+      const template = surveyTemplates[templateIndex];
+      if (template) {
+        window.location.href = `index.html?template=${templateIndex}`;
+      }
+    }
+    
+    /**
+     * Edita una plantilla existente
+     */
+    function editTemplate(templateIndex) {
+      const template = surveyTemplates[templateIndex];
+      if (template && confirm('¿Editar esta plantilla? Se abrirá en modo de edición.')) {
+        window.location.href = `index.html?editTemplate=${templateIndex}`;
+      }
+    }
+    
+    /**
+     * Elimina una plantilla
+     */
+    function deleteTemplate(templateIndex) {
+      if (confirm('¿Estás seguro de que deseas eliminar esta plantilla? Esta acción no se puede deshacer.')) {
+        surveyTemplates.splice(templateIndex, 1);
+        localStorage.setItem('surveyTemplates', JSON.stringify(surveyTemplates));
+        loadTemplates();
+        alert('Plantilla eliminada correctamente.');
+      }
+    }
+    
+    /**
+     * Elimina todas las plantillas
+     */
+    function clearAllTemplates() {
+      if (surveyTemplates.length === 0) {
+        alert('No hay plantillas para eliminar.');
+        return;
+      }
+      
+      if (confirm('¿Estás seguro de que deseas eliminar TODAS las plantillas? Esta acción no se puede deshacer.')) {
+        surveyTemplates = [];
+        localStorage.setItem('surveyTemplates', JSON.stringify(surveyTemplates));
+        loadTemplates();
+        alert('Todas las plantillas han sido eliminadas.');
+      }
+    }
+    
+    /**
+     * Simula el cierre de sesión del usuario
+     */
+    function logout() {
+      if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+        alert('Sesión finalizada');
+        window.location.href = '../index.html';
+      }
+    }
+  </script>
+</body>
+</html>
