@@ -42,6 +42,57 @@
   text-align: center;
   color: var(--gray-color);
 }
+.kpi-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.kpi-table th, .kpi-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.kpi-table th {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.progress-bar {
+  display: flex;
+  height: 16px;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #f0f0f0;
+}
+
+.bar {
+  height: 100%;
+}
+
+.bar.red {
+  background-color: #e74c3c;
+}
+
+.bar.yellow {
+  background-color: #f1c40f;
+}
+
+.bar.green {
+  background-color: #2ecc71;
+}
+
+.change {
+  font-weight: bold;
+}
+
+.change.up {
+  color: green;
+}
+
+.change.down {
+  color: red;
+}
 
 @media (max-width: 768px) {
   .consultor-actions {

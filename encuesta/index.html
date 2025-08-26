@@ -40,7 +40,7 @@
       <form id="surveyForm" class="survey-form">
         <div class="question-group">
           <div class="question-item">
-            <h3>1. ¿Cómo calificarías tu ambiente laboral actual?</h3>
+            <h3>5. ¿Cómo calificarías tu ambiente laboral actual?</h3>
             <div class="answer-options">
               <label class="radio-option">
                 <input type="radio" name="q1" value="5">
@@ -66,7 +66,7 @@
           </div>
 
           <div class="question-item">
-            <h3>2. ¿Te sientes valorado por tu equipo y jefes?</h3>
+            <h3>6. ¿Te sientes valorado por tu equipo y jefes?</h3>
             <div class="answer-options">
               <label class="radio-option">
                 <input type="radio" name="q2" value="yes">
@@ -80,9 +80,33 @@
           </div>
 
           <div class="question-item">
-            <h3>3. Comentarios adicionales:</h3>
+            <h3>7. Comentarios adicionales:</h3>
             <textarea class="answer-text" placeholder="Escribe tus comentarios aquí..."></textarea>
           </div>
+        </div><br>
+
+        <div class="question-item">
+          <h3>8. ¿Tienes alguna sugerencia para mejorar el ambiente laboral?</h3>
+          <textarea class="answer-text" placeholder="Escribe tu respuesta aquí..."></textarea>
+        </div><br>
+
+        <div class="question-item">
+          <h3>9. ¿Te gustaría participar en futuras encuestas?</h3>
+          <div class="answer-options">
+            <label class="radio-option">
+              <input type="radio" name="q8" value="si" required>
+              <span class="radio-label">Sí</span>
+            </label><br><br>
+            <label class="radio-option">
+              <input type="radio" name="q8" value="no" required>
+              <span class="radio-label">No</span>
+            </label>
+          </div>
+        </div><br>
+
+        <div>
+          <h3>10. ¿Tienes algún comentario adicional?</h3>
+          <textarea class="answer-text" placeholder="Escribe tus comentarios aquí..."></textarea>
         </div>
 
         <div class="form-actions">
@@ -92,7 +116,7 @@
           <button type="submit" class="btn success">
             <i class="fas fa-paper-plane"></i> Enviar Encuesta
           </button>
-        </div>
+        </div><br>
       </form>
     </main>
   </div>

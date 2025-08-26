@@ -9,15 +9,16 @@
 }
 
 .logout-btn {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
   border: 1px solid white;
   padding: 8px 15px;
 }
 
 .logout-btn:hover {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
 }
 
+/* --- Bienvenida --- */
 .welcome-section {
   margin-bottom: 2rem;
 }
@@ -37,6 +38,7 @@
   margin-top: 1rem;
 }
 
+/* --- Secciones Generales --- */
 .section {
   margin-bottom: 3rem;
 }
@@ -49,6 +51,7 @@
   gap: 10px;
 }
 
+/* --- Tablas Generales --- */
 .table-container {
   overflow-x: auto;
   border-radius: var(--border-radius);
@@ -71,6 +74,7 @@ th {
   color: white;
 }
 
+/* --- Estados de Encuestas --- */
 .status {
   padding: 0.5rem 1rem;
   border-radius: 20px;
@@ -94,37 +98,136 @@ th {
   color: white;
 }
 
+/* --- KPI Cards  --- */
+.kpi-section {
+  margin-top: 2rem;
+}
+
+.kpi-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.kpi-card {
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  flex: 1 1 200px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.kpi-card h3 {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.kpi-value {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #007bff;
+}
+
+/* --- Tabla Visual con Barras KPI --- */
+.kpi-bar-section {
+  margin-bottom: 3rem;
+}
+
+.kpi-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Roboto', sans-serif;
+}
+
+.kpi-table thead {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.kpi-table th,
+.kpi-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.progress-bar {
+  display: flex;
+  height: 16px;
+  width: 100%;
+  background-color: #eee;
+  border-radius: 6px;
+  overflow: hidden;
+  min-width: 150px;
+}
+
+.bar {
+  display: inline-block;
+  height: 100%;
+}
+
+.bar.red {
+  background-color: #e74c3c;
+}
+
+.bar.yellow {
+  background-color: #f1c40f;
+}
+
+.bar.green {
+  background-color: #2ecc71;
+}
+
+.change {
+  font-weight: bold;
+  display: inline-block;
+}
+
+.change.up {
+  color: #2ecc71;
+}
+
+.change.down {
+  color: #e74c3c;
+}
+
 @media (max-width: 768px) {
   .header {
     flex-direction: column;
     text-align: center;
     gap: 15px;
   }
-  
+
   .user-menu {
     margin-top: 15px;
   }
-  
+
   table, thead, tbody, th, td, tr {
     display: block;
     width: 100%;
   }
-  
+
   thead {
     display: none;
   }
-  
+
   td {
     padding: 0.75rem 0.75rem 0.75rem 50%;
     text-align: right;
     position: relative;
   }
-  
+
   td::before {
     content: attr(data-label);
     position: absolute;
     left: 15px;
     font-weight: bold;
     text-align: left;
+  }
+
+  .progress-bar {
+    min-width: 100%;
   }
 }
