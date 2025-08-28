@@ -918,3 +918,318 @@ function initApp() {
 
 // Inicializar cuando se cargue la página
 window.onload = initApp;
+
+// ===== FUNCIONALIDAD PARA SELECCIÓN POR DEPARTAMENTOS =====
+
+// Datos de los departamentos y personas
+const departmentData = {
+  'Ventas': {
+    name: 'Ventas',
+    people: [
+      { id: 1, name: 'Juan Pérez', email: 'juan.perez@empresa.com', excluded: false },
+      { id: 2, name: 'María García', email: 'maria.garcia@empresa.com', excluded: false },
+      { id: 3, name: 'Jorge Sánchez', email: 'jorge.sanchez@empresa.com', excluded: false },
+      { id: 4, name: 'Ana López', email: 'ana.lopez@empresa.com', excluded: false }
+    ]
+  },
+  'TI': {
+    name: 'TI',
+    people: [
+      { id: 5, name: 'Carlos López', email: 'carlos.lopez@empresa.com', excluded: false },
+      { id: 6, name: 'Ana Martínez', email: 'ana.martinez@empresa.com', excluded: false },
+      { id: 7, name: 'Elena Castro', email: 'elena.castro@empresa.com', excluded: false }
+    ]
+  },
+  'RH': {
+    name: 'RH',
+    people: [
+      { id: 8, name: 'Pedro Rodríguez', email: 'pedro.rodriguez@empresa.com', excluded: false },
+      { id: 9, name: 'Laura Hernández', email: 'laura.hernandez@empresa.com', excluded: false }
+    ]
+  },
+  'Gerencia': {
+    name: 'Gerencia',
+    people: [
+      { id: 10, name: 'Miguel Díaz', email: 'miguel.diaz@empresa.com', excluded: false },
+      { id: 11, name: 'Sofía Ruiz', email: 'sofia.ruiz@empresa.com', excluded: false }
+    ]
+  }
+};
+
+// Estado de la aplicación para departamentos
+const departmentState = {
+  selectedDepartments: [],
+  excludedPeople: []
+};
+
+// Alternar la selección de un departamento
+function toggleDepartmentSelection(deptName) {
+  const checkbox = document.getElementById(`dept-${deptName.toLowerCase()}`);
+  const section = document.getElementById(`dept-section-${deptName.toLowerCase()}`);
+  
+  if (checkbox.checked) {
+    section.style.display = 'block';
+    if (!departmentState.selectedDepartments.includes(deptName)) {
+      departmentState.selectedDepartments.push(deptName);
+    }
+  } else {
+    section.style.display = 'none';
+    // Ocultar el contenido si está expandido
+    const content = document.getElementById(`content-${deptName.toLowerCase()}`);
+    const icon = document.getElementById(`icon-${deptName.toLowerCase()}`);
+    
+    if (content.classList.contains('expanded')) {
+      content.classList.remove('expanded');
+      icon.classList.remove('fa-chevron-up');
+      icon.classList.add('fa-chevron-down');
+    }
+    
+    // Eliminar del estado
+    const index = departmentState.selectedDepartments.indexOf(deptName);
+    if (index > -1) {
+      departmentState.selectedDepartments.splice(index, 1);
+    }
+    
+    // Eliminar exclusiones de este departamento
+    departmentData[deptName].people.forEach(person => {
+      const excludeIndex = departmentState.excludedPeople.indexOf(person.id);
+      if (excludeIndex > -1) {
+        departmentState.excludedPeople.splice(excludeIndex, 1);
+      }
+      person.excluded = false;
+      
+      // Desmarcar checkbox de exclusión
+      const excludeCheckbox = document.getElementById(`exclude-${deptName.toLowerCase()}-${person.id}`);
+      if (excludeCheckbox) {
+        excludeCheckbox.checked = false;
+      }
+    });
+  }
+  
+  updateDepartmentSummary();
+}
+
+// Alternar la visualización del contenido del departamento
+function toggleDepartmentExpand(deptId) {
+  const content = document.getElementById(`content-${deptId}`);
+  const icon = document.getElementById(`icon-${deptId}`);
+  
+  content.classList.toggle('expanded');
+  
+  if (content.classList.contains('expanded')) {
+    icon.classList.remove('fa-chevron-down');
+    icon.classList.add('fa-chevron-up');
+  } else {
+    icon.classList.remove('fa-chevron-up');
+    icon.classList.add('fa-chevron-down');
+  }
+}
+
+// Alternar la exclusión de una persona
+function toggleExclusion(deptName, personId) {
+  const checkbox = document.getElementById(`exclude-${deptName.toLowerCase()}-${personId}`);
+  const person = departmentData[deptName].people.find(p => p.id === personId);
+  
+  if (person) {
+    person.excluded = checkbox.checked;
+    
+    // Actualizar el estado de la aplicación
+    if (checkbox.checked) {
+      if (!departmentState.excludedPeople.includes(personId)) {
+        departmentState.excludedPeople.push(personId);
+      }
+    } else {
+      const index = departmentState.excludedPeople.indexOf(personId);
+      if (index > -1) {
+        departmentState.excludedPeople.splice(index, 1);
+      }
+    }
+    
+    updateDepartmentSummary();
+  }
+}
+
+// Actualizar el resumen de participantes
+function updateDepartmentSummary() {
+  // Calcular totales
+  let totalPeople = 0;
+  let excludedPeople = 0;
+  
+  for (const deptName of departmentState.selectedDepartments) {
+    const department = departmentData[deptName];
+    totalPeople += department.people.length;
+    excludedPeople += department.people.filter(p => p.excluded).length;
+  }
+  
+  const includedPeople = totalPeople - excludedPeople;
+  
+  // Actualizar la interfaz
+  document.getElementById('included-count').textContent = includedPeople;
+  document.getElementById('excluded-count').textContent = excludedPeople;
+  document.getElementById('department-count').textContent = departmentState.selectedDepartments.length;
+  
+  // Actualizar la lista de seleccionados
+  const selectedList = document.getElementById('selectedList');
+  const noSelectedMessage = document.getElementById('noSelectedMessage');
+  
+  if (departmentState.selectedDepartments.length === 0) {
+    noSelectedMessage.style.display = 'block';
+    selectedList.innerHTML = '';
+    return;
+  }
+  
+  noSelectedMessage.style.display = 'none';
+  
+  let html = '';
+  for (const deptName of departmentState.selectedDepartments) {
+    const department = departmentData[deptName];
+    const includedInDept = department.people.filter(p => !p.excluded);
+    
+    if (includedInDept.length > 0) {
+      html += `<div class="department-summary">
+                 <h4>${deptName} (${includedInDept.length} persona${includedInDept.length !== 1 ? 's' : ''})</h4>
+                 <ul>`;
+      
+      includedInDept.forEach(person => {
+        html += `<li>${person.name} - ${person.email}</li>`;
+      });
+      
+      html += `</ul></div>`;
+    }
+  }
+  
+  selectedList.innerHTML = html;
+}
+
+// Modificar la función toggleParticipantsSelection para inicializar el resumen
+function toggleParticipantsSelection() {
+  const participantsType = document.querySelector('input[name="participantsType"]:checked').value;
+  const departmentSelection = document.getElementById('departmentSelection');
+  const individualSelection = document.getElementById('individualSelection');
+  
+  if (participantsType === 'departments') {
+    departmentSelection.style.display = 'block';
+    individualSelection.style.display = 'none';
+    // Inicializar el resumen
+    updateDepartmentSummary();
+  } else {
+    departmentSelection.style.display = 'none';
+    individualSelection.style.display = 'block';
+    loadIndividuals();
+    renderSelectedIndividuals();
+  }
+}
+
+// Modificar la función handleFormSubmit para validar la selección por departamentos
+function handleFormSubmit(e) {
+  e.preventDefault();
+  
+  const startDate = new Date(document.getElementById('startDate').value);
+  const endDate = new Date(document.getElementById('endDate').value);
+  
+  if (endDate < startDate) {
+    alert('La fecha de fin no puede ser anterior a la fecha de inicio');
+    return;
+  }
+  
+  if (questionCounter === 0) {
+    alert('Debes agregar al menos una pregunta');
+    return;
+  }
+  
+  const participantsType = document.querySelector('input[name="participantsType"]:checked').value;
+  
+  if (participantsType === 'departments') {
+    if (departmentState.selectedDepartments.length === 0) {
+      alert('Debes seleccionar al menos un departamento');
+      return;
+    }
+    
+    // Verificar que al menos una persona esté incluida en cada departamento seleccionado
+    for (const deptName of departmentState.selectedDepartments) {
+      const includedPeople = departmentData[deptName].people.filter(p => !p.excluded);
+      if (includedPeople.length === 0) {
+        alert(`El departamento ${deptName} no tiene personas incluidas. Deselecciona el departamento o incluye al menos una persona.`);
+        return;
+      }
+    }
+  } else {
+    if (selectedIndividuals.length === 0) {
+      alert('Debes seleccionar al menos una persona');
+      return;
+    }
+  }
+  
+  // Aquí iría el código para guardar en base de datos real
+  alert('Encuesta guardada y asignada correctamente');
+  window.location.href = '../administrador/index.html';
+}
+
+// Asegúrate de inicializar el resumen cuando se cargue la página
+function initApp() {
+  // Cargar la biblioteca de preguntas
+  loadQuestionLibrary();
+  
+  // Configurar el formulario
+  const surveyForm = document.getElementById('surveyForm');
+  if (surveyForm) {
+    surveyForm.addEventListener('submit', handleFormSubmit);
+  }
+  
+  // Inicializar la lista de personas seleccionadas
+  selectedIndividuals = [];
+  
+  // Inicializar el resumen de departamentos
+  updateDepartmentSummary();
+  
+  // Verificar si hay parámetros de URL para cargar plantilla
+  const urlParams = new URLSearchParams(window.location.search);
+  const templateIndex = urlParams.get('template');
+  const editTemplateIndex = urlParams.get('editTemplate');
+  
+  if (templateIndex !== null) {
+    loadTemplateIntoForm(parseInt(templateIndex));
+  } else if (editTemplateIndex !== null) {
+    // Modo edición de plantilla
+    const template = surveyTemplates[parseInt(editTemplateIndex)];
+    document.getElementById('surveyName').value = template.name;
+    document.getElementById('surveyDescription').value = template.description || '';
+    document.querySelector(`input[name="evalType"][value="${template.evalType}"]`).checked = true;
+    
+    // Configurar tipo de participantes si existe en la plantilla
+    if (template.participantsType) {
+      document.querySelector(`input[name="participantsType"][value="${template.participantsType}"]`).checked = true;
+      toggleParticipantsSelection();
+      
+      // Cargar individuos seleccionados si es una plantilla de individuos
+      if (template.participantsType === 'individuals') {
+        selectedIndividuals = template.participants.map(p => ({
+          id: p.id,
+          name: p.name,
+          department: p.department,
+          email: p.email
+        }));
+        // Renderizar después de un breve delay para asegurar que el DOM esté listo
+        setTimeout(() => {
+          renderSelectedIndividuals();
+          updateIndividualCheckboxes();
+        }, 100);
+      }
+    }
+    
+    loadTemplateIntoForm(parseInt(editTemplateIndex));
+  } else {
+    // Modo nueva encuesta - agregar pregunta inicial
+    addQuestion();
+  }
+  
+  // Cargar plantillas si estamos en la página de plantillas
+  if (typeof loadTemplates === 'function') {
+    loadTemplates();
+  }
+  
+  // Renderizar personas seleccionadas si estamos en el formulario
+  if (document.getElementById('selectedIndividuals')) {
+    renderSelectedIndividuals();
+  }
+}

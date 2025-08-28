@@ -41,7 +41,7 @@
       <div class="quick-actions">
         <button type="button" class="btn" onclick="window.location.href='plantillas.html'">
           <i class="fas fa-clone"></i> Usar Plantilla Existente
-        </button>
+        </button> 
         <button type="button" class="btn success" onclick="saveAsTemplate()">
           <i class="fas fa-save"></i> Guardar como Plantilla
         </button>
@@ -83,7 +83,11 @@
             <label>Tipo de Evaluación:</label>
             <div class="radio-group">
               <label class="radio-option">
-                <input type="radio" name="evalType" value="90" checked>
+                <input type="radio" name="evalType" value="0" checked>
+                <span class="radio-label">0° (Autoevaluación)</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="evalType" value="90">
                 <span class="radio-label">90° (Jefe → Subordinado)</span>
               </label>
               <label class="radio-option">
@@ -115,23 +119,232 @@
           <div id="departmentSelection" class="participants-selection">
             <div class="form-group">
               <label>Departamentos</label>
+              <div class="help-text">
+                <i class="fas fa-info-circle"></i> Selecciona los departamentos que participarán en la encuesta. 
+                Luego puedes expandir cada departamento para excluir personas específicas.
+              </div>
               <div class="checkbox-group">
                 <label class="checkbox-option">
-                  <input type="checkbox" name="departments" value="Ventas">
+                  <input type="checkbox" id="dept-ventas" name="departments" value="Ventas" onchange="toggleDepartmentSelection('Ventas')">
                   <span class="checkbox-label">Departamento de Ventas</span>
                 </label>
                 <label class="checkbox-option">
-                  <input type="checkbox" name="departments" value="TI">
+                  <input type="checkbox" id="dept-ti" name="departments" value="TI" onchange="toggleDepartmentSelection('TI')">
                   <span class="checkbox-label">Departamento de TI</span>
                 </label>
                 <label class="checkbox-option">
-                  <input type="checkbox" name="departments" value="RH">
+                  <input type="checkbox" id="dept-rh" name="departments" value="RH" onchange="toggleDepartmentSelection('RH')">
                   <span class="checkbox-label">Departamento de RH</span>
                 </label>
                 <label class="checkbox-option">
-                  <input type="checkbox" name="departments" value="Gerencia">
+                  <input type="checkbox" id="dept-gerencia" name="departments" value="Gerencia" onchange="toggleDepartmentSelection('Gerencia')">
                   <span class="checkbox-label">Gerencia</span>
                 </label>
+              </div>
+            </div>
+            
+            <!-- Departamento de Ventas -->
+            <div class="department-section" id="dept-section-ventas" style="display: none;">
+              <div class="department-header" onclick="toggleDepartmentExpand('ventas')">
+                <div class="department-title">
+                  <i class="fas fa-building"></i>
+                  <span>Ventas - 4 personas</span>
+                </div>
+                <div>
+                  <i class="fas fa-chevron-down" id="icon-ventas"></i>
+                </div>
+              </div>
+              <div class="department-content" id="content-ventas">
+                <div class="exclusion-section">
+                  <div class="exclusion-title">
+                    <i class="fas fa-user-times"></i>
+                    <h4>Excluir Personas</h4>
+                  </div>
+                  <p class="help-text">Marca las casillas de las personas que deseas <strong>excluir</strong> de este departamento.</p>
+                  
+                  <div class="people-list">
+                    <div class="person-item">
+                      <input type="checkbox" id="exclude-ventas-1" class="exclude-checkbox" onchange="toggleExclusion('Ventas', 1)">
+                      <div class="person-info">
+                        <div class="person-name">Juan Pérez</div>
+                        <div class="person-email">juan.perez@empresa.com</div>
+                      </div>
+                    </div>
+                    <div class="person-item">
+                      <input type="checkbox" id="exclude-ventas-2" class="exclude-checkbox" onchange="toggleExclusion('Ventas', 2)">
+                      <div class="person-info">
+                        <div class="person-name">María García</div>
+                        <div class="person-email">maria.garcia@empresa.com</div>
+                      </div>
+                    </div>
+                    <div class="person-item">
+                      <input type="checkbox" id="exclude-ventas-3" class="exclude-checkbox" onchange="toggleExclusion('Ventas', 3)">
+                      <div class="person-info">
+                        <div class="person-name">Jorge Sánchez</div>
+                        <div class="person-email">jorge.sanchez@empresa.com</div>
+                      </div>
+                    </div>
+                    <div class="person-item">
+                      <input type="checkbox" id="exclude-ventas-4" class="exclude-checkbox" onchange="toggleExclusion('Ventas', 4)">
+                      <div class="person-info">
+                        <div class="person-name">Ana López</div>
+                        <div class="person-email">ana.lopez@empresa.com</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Departamento de TI -->
+            <div class="department-section" id="dept-section-ti" style="display: none;">
+              <div class="department-header" onclick="toggleDepartmentExpand('ti')">
+                <div class="department-title">
+                  <i class="fas fa-laptop-code"></i>
+                  <span>TI - 3 personas</span>
+                </div>
+                <div>
+                  <i class="fas fa-chevron-down" id="icon-ti"></i>
+                </div>
+              </div>
+              <div class="department-content" id="content-ti">
+                <div class="exclusion-section">
+                  <div class="exclusion-title">
+                    <i class="fas fa-user-times"></i>
+                    <h4>Excluir Personas</h4>
+                  </div>
+                  <p class="help-text">Marca las casillas de las personas que deseas <strong>excluir</strong> de este departamento.</p>
+                  
+                  <div class="people-list">
+                    <div class="person-item">
+                      <input type="checkbox" id="exclude-ti-1" class="exclude-checkbox" onchange="toggleExclusion('TI', 5)">
+                      <div class="person-info">
+                        <div class="person-name">Carlos López</div>
+                        <div class="person-email">carlos.lopez@empresa.com</div>
+                      </div>
+                    </div>
+                    <div class="person-item">
+                      <input type="checkbox" id="exclude-ti-2" class="exclude-checkbox" onchange="toggleExclusion('TI', 6)">
+                      <div class="person-info">
+                        <div class="person-name">Ana Martínez</div>
+                        <div class="person-email">ana.martinez@empresa.com</div>
+                      </div>
+                    </div>
+                    <div class="person-item">
+                      <input type="checkbox" id="exclude-ti-3" class="exclude-checkbox" onchange="toggleExclusion('TI', 7)">
+                      <div class="person-info">
+                        <div class="person-name">Elena Castro</div>
+                        <div class="person-email">elena.castro@empresa.com</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Departamento de RH -->
+            <div class="department-section" id="dept-section-rh" style="display: none;">
+              <div class="department-header" onclick="toggleDepartmentExpand('rh')">
+                <div class="department-title">
+                  <i class="fas fa-user-tie"></i>
+                  <span>RH - 2 personas</span>
+                </div>
+                <div>
+                  <i class="fas fa-chevron-down" id="icon-rh"></i>
+                </div>
+              </div>
+              <div class="department-content" id="content-rh">
+                <div class="exclusion-section">
+                  <div class="exclusion-title">
+                    <i class="fas fa-user-times"></i>
+                    <h4>Excluir Personas</h4>
+                  </div>
+                  <p class="help-text">Marca las casillas de las personas que deseas <strong>excluir</strong> de este departamento.</p>
+                  
+                  <div class="people-list">
+                    <div class="person-item">
+                      <input type="checkbox" id="exclude-rh-1" class="exclude-checkbox" onchange="toggleExclusion('RH', 8)">
+                      <div class="person-info">
+                        <div class="person-name">Pedro Rodríguez</div>
+                        <div class="person-email">pedro.rodriguez@empresa.com</div>
+                      </div>
+                    </div>
+                    <div class="person-item">
+                      <input type="checkbox" id="exclude-rh-2" class="exclude-checkbox" onchange="toggleExclusion('RH', 9)">
+                      <div class="person-info">
+                        <div class="person-name">Laura Hernández</div>
+                        <div class="person-email">laura.hernandez@empresa.com</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Departamento de Gerencia -->
+            <div class="department-section" id="dept-section-gerencia" style="display: none;">
+              <div class="department-header" onclick="toggleDepartmentExpand('gerencia')">
+                <div class="department-title">
+                  <i class="fas fa-chart-line"></i>
+                  <span>Gerencia - 2 personas</span>
+                </div>
+                <div>
+                  <i class="fas fa-chevron-down" id="icon-gerencia"></i>
+                </div>
+              </div>
+              <div class="department-content" id="content-gerencia">
+                <div class="exclusion-section">
+                  <div class="exclusion-title">
+                    <i class="fas fa-user-times"></i>
+                    <h4>Excluir Personas</h4>
+                  </div>
+                  <p class="help-text">Marca las casillas de las personas que deseas <strong>excluir</strong> de este departamento.</p>
+                  
+                  <div class="people-list">
+                    <div class="person-item">
+                      <input type="checkbox" id="exclude-gerencia-1" class="exclude-checkbox" onchange="toggleExclusion('Gerencia', 10)">
+                      <div class="person-info">
+                        <div class="person-name">Miguel Díaz</div>
+                        <div class="person-email">miguel.diaz@empresa.com</div>
+                      </div>
+                    </div>
+                    <div class="person-item">
+                      <input type="checkbox" id="exclude-gerencia-2" class="exclude-checkbox" onchange="toggleExclusion('Gerencia', 11)">
+                      <div class="person-info">
+                        <div class="person-name">Sofía Ruiz</div>
+                        <div class="person-email">sofia.ruiz@empresa.com</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="selected-section">
+              <h3>Participantes Seleccionados</h3>
+              <div class="help-text">
+                <i class="fas fa-info-circle"></i> Resumen de departamentos y personas que participarán en la encuesta. 
+                Las personas excluidas no se mostrarán en este resumen.
+              </div>
+              <div id="selectedList">
+                <p id="noSelectedMessage">No hay participantes seleccionados</p>
+              </div>
+              <div class="summary-cards">
+                <div class="summary-card included">
+                  <i class="fas fa-user-check summary-icon"></i>
+                  <div class="summary-number" id="included-count">0</div>
+                  <div class="summary-label">Personas Incluidas</div>
+                </div>
+                <div class="summary-card excluded">
+                  <i class="fas fa-user-times summary-icon"></i>
+                  <div class="summary-number" id="excluded-count">0</div>
+                  <div class="summary-label">Personas Excluidas</div>
+                </div>
+                <div class="summary-card">
+                  <i class="fas fa-building summary-icon"></i>
+                  <div class="summary-number" id="department-count">0</div>
+                  <div class="summary-label">Departamentos</div>
+                </div>
               </div>
             </div>
           </div>
@@ -161,7 +374,7 @@
               <label>Personas Seleccionadas:</label>
               <div class="selected-individuals" id="selectedIndividuals">
                 <!-- Las personas seleccionadas aparecerán aquí -->
-                <p class="help-text" id="noSelectedMessage">No hay personas seleccionadas</p>
+                <p class="help-text" id="noSelectedMessageIndividual">No hay personas seleccionadas</p>
               </div>
             </div>
           </div>
@@ -202,8 +415,8 @@
             <!-- Etiquetas de búsqueda rápida -->
             <div class="search-tags">
               <span class="search-tag" onclick="quickSearch('liderazgo')">Liderazgo</span>
-              <span class="search-tag" onclick="quickSearch('comunicación')">Comunicación</span>
-              <span class="search-tag" onclick="quickSearch('equipo')">Trabajo en equipo</span>
+              <span class="search-tag" onclick="quickSearch('comunicacion')">Comunicación</span>
+              <span class="search-tag" onclick="quickSearch('trabajoEquipo')">Trabajo en equipo</span>
               <span class="search-tag" onclick="quickSearch('habilidades')">Habilidades</span>
               <span class="search-tag" onclick="quickSearch('valores')">Valores</span>
             </div>
