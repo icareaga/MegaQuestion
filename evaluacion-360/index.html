@@ -11,7 +11,7 @@
 <body>
   <header class="header">
     <div class="header-content">
-      <a href="../panel-usuario.html" class="logo-link">
+      <a href="../index.html" class="logo-link">
         <img src="../img/Logo.jpg" alt="MEGA Logo" class="mega-logo">
       </a>
       <h2 class="mega-subtitle">MegaQuestion - Evaluación 360° TI</h2>
@@ -28,7 +28,7 @@
     <main class="main-content">
       <div class="welcome-section">
         <h1>Evaluación 360°: Evaluación de Clima TI</h1>
-        <p>Selecciona compañeros del departamento de TI para evaluar. Revisa quiénes te faltan por evaluar abajo.</p>
+        <p>Revisa quiénes te faltan por evaluar abajo y selecciona un compañero para evaluar.</p>
         <div class="summary-cards">
           <div class="summary-card included">
             <i class="fas fa-check-circle summary-icon"></i>
@@ -88,21 +88,6 @@
           <!-- Lista dinámica -->
         </div>
       </section>
-
-      <section class="section participants-selection">
-        <h2><i class="fas fa-users"></i> Selecciona Compañeros Disponibles</h2>
-        <div class="search-container">
-          <input type="text" id="search-companions" class="form-group search-input" placeholder="Buscar compañeros...">
-        </div>
-        <div class="individuals-container" id="companions-list">
-          <div class="checkbox-group">
-            <!-- Lista dinámica -->
-          </div>
-        </div>
-        <div class="form-actions">
-          <button class="btn success" onclick="evaluarSeleccionados()">Evaluar Seleccionados</button>
-        </div>
-      </section>
     </main>
   </div>
 
@@ -123,25 +108,26 @@
       { id: 6, name: "Javier Torres", role: "Líder Técnico", status: "pending" }
     ];
 
+    // Mover todos los compañeros disponibles a pendientes al iniciar
+    companions.forEach(companion => {
+      if (companion.status === 'available') {
+        companion.status = 'pending';
+      }
+    });
+
     // Función para actualizar listas
     function updateLists() {
       const evaluatedList = document.getElementById('evaluated-list');
       const pendingList = document.getElementById('pending-list');
-      const companionsList = document.getElementById('companions-list').querySelector('.checkbox-group');
       const pendingSelect = document.getElementById('pending-select');
-      const searchInput = document.getElementById('search-companions').value.toLowerCase();
 
       // Limpiar listas
       evaluatedList.innerHTML = '';
       pendingList.innerHTML = '';
-      companionsList.innerHTML = '';
       pendingSelect.innerHTML = '<option value="">Selecciona un compañero pendiente...</option>';
 
       // Filtrar y mostrar compañeros
       companions.forEach(companion => {
-        const name = companion.name.toLowerCase();
-        if (searchInput && !name.includes(searchInput) && companion.status === 'available') return;
-
         if (companion.status === 'evaluated') {
           evaluatedList.innerHTML += `
             <div class="selected-individual">
@@ -159,12 +145,6 @@
               <span class="status pendiente">Pendiente</span>
             </div>`;
           pendingSelect.innerHTML += `<option value="${companion.id}" data-name="${companion.name}" data-role="${companion.role}">${companion.name} - ${companion.role}</option>`;
-        } else if (companion.status === 'available') {
-          companionsList.innerHTML += `
-            <label class="checkbox-option">
-              <input type="checkbox" name="companion" value="${companion.id}" data-name="${companion.name}" data-role="${companion.role}">
-              <span class="checkbox-label">${companion.name} - ${companion.role}</span>
-            </label>`;
         }
       });
 
@@ -209,28 +189,6 @@
         alert(`Evaluación enviada para ${companion.name}`);
       }
     });
-
-    // Función para evaluar seleccionados (manteniendo funcionalidad anterior)
-    function evaluarSeleccionados() {
-      const selected = document.querySelectorAll('input[name="companion"]:checked');
-      if (selected.length === 0) {
-        alert('Por favor, selecciona al menos un compañero disponible.');
-        return;
-      }
-
-      selected.forEach(input => {
-        const companionId = input.value;
-        const companion = companions.find(c => c.id == companionId);
-        if (companion) {
-          companion.status = 'pending'; // Mover a pendientes como ejemplo
-        }
-      });
-      updateLists();
-      alert('Compañeros seleccionados movidos a pendientes.');
-    }
-
-    // Filtrar compañeros por búsqueda
-    document.getElementById('search-companions').addEventListener('input', updateLists);
 
     // Inicializar listas
     updateLists();

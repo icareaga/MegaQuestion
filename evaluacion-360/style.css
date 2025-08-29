@@ -273,73 +273,6 @@ body {
   resize: vertical;
 }
 
-/* Estilos para la selección de participantes (disponibles) */
-.participants-selection {
-  background: white;
-  padding: 20px;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-}
-
-.participants-selection h2 {
-  color: var(--primary-color);
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.search-container {
-  margin-bottom: 15px;
-}
-
-.search-input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: var(--border-radius);
-  font-size: 1rem;
-}
-
-.search-input:focus {
-  border-color: var(--secondary-color);
-  outline: none;
-}
-
-.individuals-container {
-  max-height: 300px;
-  overflow-y: auto;
-  border: 1px solid #ddd;
-  border-radius: var(--border-radius);
-  padding: 10px;
-  background: white;
-}
-
-.checkbox-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.checkbox-option {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px;
-  border-radius: var(--border-radius);
-  transition: background-color 0.2s;
-  border: 1px solid #eee;
-}
-
-.checkbox-option:hover {
-  background-color: #f5f5f5;
-}
-
-.checkbox-label {
-  user-select: none;
-  font-weight: normal;
-}
-
 /* Estilos para listas de evaluados y pendientes */
 .selected-individuals {
   display: flex;
@@ -435,7 +368,6 @@ body {
     width: 100%;
   }
 
-  .individuals-container,
   .selected-individuals {
     max-height: 200px;
   }

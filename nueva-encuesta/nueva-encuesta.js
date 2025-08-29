@@ -82,6 +82,14 @@ const departmentData = {
   }
 };
 
+// Mapa para corregir el case de los nombres de departamentos
+const deptNameMap = {
+  'ventas': 'Ventas',
+  'ti': 'TI',
+  'rh': 'RH',
+  'gerencia': 'Gerencia'
+};
+
 // Estado de la aplicación para departamentos
 const departmentState = {
   selectedDepartments: [],
@@ -414,7 +422,10 @@ function saveAsTemplate() {
     const deptCheckboxes = document.querySelectorAll('input[name="departments"]:checked');
     participantsData = Array.from(deptCheckboxes).map(checkbox => ({
       type: 'department',
-      name: checkbox.value
+      name: checkbox.value,
+      excluded: departmentData[checkbox.value].people
+        .filter(p => p.excluded)
+        .map(p => ({ id: p.id, name: p.name, email: p.email }))
     }));
     if (participantsData.length === 0) {
       alert('Debes seleccionar al menos un departamento.');
@@ -588,11 +599,35 @@ function loadTemplateIntoForm(templateIndex) {
     }
     
     if (template.participantsType === 'departments') {
+      // Limpiar estado previo
+      departmentState.selectedDepartments = [];
+      departmentState.excludedPeople = [];
+      Object.values(departmentData).forEach(dept => {
+        dept.people.forEach(person => {
+          person.excluded = false;
+        });
+      });
+      
       template.participants.forEach(participant => {
         const deptCheckbox = document.getElementById(`dept-${participant.name.toLowerCase()}`);
-        if (deptCheckbox) deptCheckbox.checked = true;
-        toggleDepartmentSelection(participant.name);
+        if (deptCheckbox) {
+          deptCheckbox.checked = true;
+          toggleDepartmentSelection(participant.name);
+        }
+        // Cargar personas excluidas
+        if (participant.excluded) {
+          participant.excluded.forEach(excludedPerson => {
+            const person = departmentData[participant.name].people.find(p => p.id === excludedPerson.id);
+            if (person) {
+              person.excluded = true;
+              departmentState.excludedPeople.push(excludedPerson.id);
+              const excludeCheckbox = document.getElementById(`exclude-${participant.name.toLowerCase()}-${excludedPerson.id}`);
+              if (excludeCheckbox) excludeCheckbox.checked = true;
+            }
+          });
+        }
       });
+      updateDepartmentSummary();
     } else {
       selectedIndividuals = template.participants.map(p => ({
         id: p.id,
@@ -968,10 +1003,14 @@ function toggleDepartmentSelection(deptName) {
     }
     
     departmentData[deptName].people.forEach(person => {
+      person.excluded = false;
       const excludeCheckbox = document.getElementById(`exclude-${deptName.toLowerCase()}-${person.id}`);
       if (excludeCheckbox) {
         excludeCheckbox.checked = false;
-        updateDepartmentPersonState(deptName, person.id, false);
+      }
+      const excludedIndex = departmentState.excludedPeople.indexOf(person.id);
+      if (excludedIndex > -1) {
+        departmentState.excludedPeople.splice(excludedIndex, 1);
       }
     });
   }
@@ -1018,13 +1057,14 @@ function updateDepartmentSummary() {
   let totalPeople = 0;
   let excludedPeople = 0;
   
-  for (const deptName of departmentState.selectedDepartments) {
+  // Calcular totales
+  departmentState.selectedDepartments.forEach(deptName => {
     const department = departmentData[deptName];
     if (department) {
       totalPeople += department.people.length;
       excludedPeople += department.people.filter(p => p.excluded).length;
     }
-  }
+  });
   
   const includedPeople = totalPeople - excludedPeople;
   
@@ -1034,10 +1074,12 @@ function updateDepartmentSummary() {
   const selectedList = document.getElementById('selectedList');
   const noSelectedMessage = document.getElementById('noSelectedMessage');
   
+  // Actualizar contadores
   if (includedCount) includedCount.textContent = includedPeople;
   if (excludedCount) excludedCount.textContent = excludedPeople;
   if (departmentCount) departmentCount.textContent = departmentState.selectedDepartments.length;
   
+  // Actualizar lista de seleccionados
   if (!selectedList || !noSelectedMessage) return;
   
   if (departmentState.selectedDepartments.length === 0) {
@@ -1049,7 +1091,7 @@ function updateDepartmentSummary() {
   noSelectedMessage.style.display = 'none';
   
   let html = '';
-  for (const deptName of departmentState.selectedDepartments) {
+  departmentState.selectedDepartments.forEach(deptName => {
     const department = departmentData[deptName];
     const includedInDept = department.people.filter(p => !p.excluded);
     
@@ -1064,7 +1106,7 @@ function updateDepartmentSummary() {
       
       html += `</ul></div>`;
     }
-  }
+  });
   
   selectedList.innerHTML = html;
 }
@@ -1101,11 +1143,19 @@ function setupEventListeners() {
     });
   });
   
-  // Checkboxes de exclusión
-  document.querySelectorAll('.exclude-checkbox').forEach(checkbox => {
-    checkbox.addEventListener('change', () => {
-      const [_, deptName, personId] = checkbox.id.split('-');
-      toggleExclusion(deptName.charAt(0).toUpperCase() + deptName.slice(1), parseInt(personId));
+  // Checkboxes de exclusión (usamos un solo listener en el contenedor)
+  document.querySelectorAll('.department-section').forEach(section => {
+    section.addEventListener('change', (e) => {
+      if (e.target.matches('.exclude-checkbox')) {
+        const [_, deptName, personId] = e.target.id.split('-');
+        const lowerDeptName = deptName.toLowerCase();
+        const formattedDeptName = deptNameMap[lowerDeptName];
+        if (!formattedDeptName) {
+          console.error(`Departamento no encontrado para ${lowerDeptName}`);
+          return;
+        }
+        toggleExclusion(formattedDeptName, parseInt(personId));
+      }
     });
   });
   
@@ -1191,32 +1241,7 @@ function initApp() {
     if (templateIndex !== null) {
       loadTemplateIntoForm(parseInt(templateIndex));
     } else if (editTemplateIndex !== null) {
-      const template = JSON.parse(localStorage.getItem('surveyTemplates'))?.[parseInt(editTemplateIndex)];
-      if (template) {
-        document.getElementById('surveyName').value = template.name;
-        document.getElementById('surveyDescription').value = template.description || '';
-        document.querySelector(`input[name="evalType"][value="${template.evalType}"]`)?.setAttribute('checked', 'checked');
-        
-        if (template.participantsType) {
-          document.querySelector(`input[name="participantsType"][value="${template.participantsType}"]`)?.setAttribute('checked', 'checked');
-          toggleParticipantsSelection();
-          
-          if (template.participantsType === 'individuals') {
-            selectedIndividuals = template.participants.map(p => ({
-              id: p.id,
-              name: p.name,
-              department: p.department,
-              email: p.email
-            }));
-            setTimeout(() => {
-              renderSelectedIndividuals();
-              updateIndividualCheckboxes();
-            }, 100);
-          }
-        }
-        
-        loadTemplateIntoForm(parseInt(editTemplateIndex));
-      }
+      loadTemplateIntoForm(parseInt(editTemplateIndex));
     } else {
       addQuestion();
     }
