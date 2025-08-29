@@ -651,9 +651,6 @@ function logout() {
 /**
  * Valida y envía el formulario
  */
-/**
- * Valida y envía el formulario
- */
 function handleFormSubmit(e) {
   e.preventDefault();
   
@@ -673,10 +670,18 @@ function handleFormSubmit(e) {
   const participantsType = document.querySelector('input[name="participantsType"]:checked').value;
   
   if (participantsType === 'departments') {
-    const selectedDepartments = document.querySelectorAll('input[name="departments"]:checked');
-    if (selectedDepartments.length === 0) {
+    if (departmentState.selectedDepartments.length === 0) {
       alert('Debes seleccionar al menos un departamento');
       return;
+    }
+    
+    // Verificar que al menos una persona esté incluida en cada departamento seleccionado
+    for (const deptName of departmentState.selectedDepartments) {
+      const includedPeople = departmentData[deptName].people.filter(p => !p.excluded);
+      if (includedPeople.length === 0) {
+        alert(`El departamento ${deptName} no tiene personas incluidas. Deselecciona el departamento o incluye al menos una persona.`);
+        return;
+      }
     }
   } else {
     if (selectedIndividuals.length === 0) {
@@ -701,6 +706,8 @@ function toggleParticipantsSelection() {
   if (participantsType === 'departments') {
     departmentSelection.style.display = 'block';
     individualSelection.style.display = 'none';
+    // Inicializar el resumen
+    updateDepartmentSummary();
   } else {
     departmentSelection.style.display = 'none';
     individualSelection.style.display = 'block';
@@ -848,77 +855,6 @@ function removeIndividual(id) {
 }
 
 
-/**
- * Inicializa la aplicación
- */
-function initApp() {
-  // Cargar la biblioteca de preguntas
-  loadQuestionLibrary();
-  
-  // Configurar el formulario
-  const surveyForm = document.getElementById('surveyForm');
-  if (surveyForm) {
-    surveyForm.addEventListener('submit', handleFormSubmit);
-  }
-  
-  // Inicializar la lista de personas seleccionadas
-  selectedIndividuals = [];
-  
-  // Verificar si hay parámetros de URL para cargar plantilla
-  const urlParams = new URLSearchParams(window.location.search);
-  const templateIndex = urlParams.get('template');
-  const editTemplateIndex = urlParams.get('editTemplate');
-  
-  if (templateIndex !== null) {
-    loadTemplateIntoForm(parseInt(templateIndex));
-  } else if (editTemplateIndex !== null) {
-    // Modo edición de plantilla
-    const template = surveyTemplates[parseInt(editTemplateIndex)];
-    document.getElementById('surveyName').value = template.name;
-    document.getElementById('surveyDescription').value = template.description || '';
-    document.querySelector(`input[name="evalType"][value="${template.evalType}"]`).checked = true;
-    
-    // Configurar tipo de participantes si existe en la plantilla
-    if (template.participantsType) {
-      document.querySelector(`input[name="participantsType"][value="${template.participantsType}"]`).checked = true;
-      toggleParticipantsSelection();
-      
-      // Cargar individuos seleccionados si es una plantilla de individuos
-      if (template.participantsType === 'individuals') {
-        selectedIndividuals = template.participants.map(p => ({
-          id: p.id,
-          name: p.name,
-          department: p.department,
-          email: p.email
-        }));
-        // Renderizar después de un breve delay para asegurar que el DOM esté listo
-        setTimeout(() => {
-          renderSelectedIndividuals();
-          updateIndividualCheckboxes();
-        }, 100);
-      }
-    }
-    
-    loadTemplateIntoForm(parseInt(editTemplateIndex));
-  } else {
-    // Modo nueva encuesta - agregar pregunta inicial
-    addQuestion();
-  }
-  
-  // Cargar plantillas si estamos en la página de plantillas
-  if (typeof loadTemplates === 'function') {
-    loadTemplates();
-  }
-  
-  // Renderizar personas seleccionadas si estamos en el formulario
-  if (document.getElementById('selectedIndividuals')) {
-    renderSelectedIndividuals();
-  }
-}
-
-// Inicializar cuando se cargue la página
-window.onload = initApp;
-
 // ===== FUNCIONALIDAD PARA SELECCIÓN POR DEPARTAMENTOS =====
 
 // Datos de los departamentos y personas
@@ -1027,6 +963,7 @@ function toggleDepartmentExpand(deptId) {
 
 // Alternar la exclusión de una persona
 function toggleExclusion(deptName, personId) {
+  // Nota: Esta función asume que los IDs de checkboxes en HTML usan el personId global (e.g., exclude-ti-5 para TI id=5)
   const checkbox = document.getElementById(`exclude-${deptName.toLowerCase()}-${personId}`);
   const person = departmentData[deptName].people.find(p => p.id === personId);
   
@@ -1101,71 +1038,9 @@ function updateDepartmentSummary() {
   selectedList.innerHTML = html;
 }
 
-// Modificar la función toggleParticipantsSelection para inicializar el resumen
-function toggleParticipantsSelection() {
-  const participantsType = document.querySelector('input[name="participantsType"]:checked').value;
-  const departmentSelection = document.getElementById('departmentSelection');
-  const individualSelection = document.getElementById('individualSelection');
-  
-  if (participantsType === 'departments') {
-    departmentSelection.style.display = 'block';
-    individualSelection.style.display = 'none';
-    // Inicializar el resumen
-    updateDepartmentSummary();
-  } else {
-    departmentSelection.style.display = 'none';
-    individualSelection.style.display = 'block';
-    loadIndividuals();
-    renderSelectedIndividuals();
-  }
-}
-
-// Modificar la función handleFormSubmit para validar la selección por departamentos
-function handleFormSubmit(e) {
-  e.preventDefault();
-  
-  const startDate = new Date(document.getElementById('startDate').value);
-  const endDate = new Date(document.getElementById('endDate').value);
-  
-  if (endDate < startDate) {
-    alert('La fecha de fin no puede ser anterior a la fecha de inicio');
-    return;
-  }
-  
-  if (questionCounter === 0) {
-    alert('Debes agregar al menos una pregunta');
-    return;
-  }
-  
-  const participantsType = document.querySelector('input[name="participantsType"]:checked').value;
-  
-  if (participantsType === 'departments') {
-    if (departmentState.selectedDepartments.length === 0) {
-      alert('Debes seleccionar al menos un departamento');
-      return;
-    }
-    
-    // Verificar que al menos una persona esté incluida en cada departamento seleccionado
-    for (const deptName of departmentState.selectedDepartments) {
-      const includedPeople = departmentData[deptName].people.filter(p => !p.excluded);
-      if (includedPeople.length === 0) {
-        alert(`El departamento ${deptName} no tiene personas incluidas. Deselecciona el departamento o incluye al menos una persona.`);
-        return;
-      }
-    }
-  } else {
-    if (selectedIndividuals.length === 0) {
-      alert('Debes seleccionar al menos una persona');
-      return;
-    }
-  }
-  
-  // Aquí iría el código para guardar en base de datos real
-  alert('Encuesta guardada y asignada correctamente');
-  window.location.href = '../administrador/index.html';
-}
-
-// Asegúrate de inicializar el resumen cuando se cargue la página
+/**
+ * Inicializa la aplicación
+ */
 function initApp() {
   // Cargar la biblioteca de preguntas
   loadQuestionLibrary();
@@ -1233,3 +1108,6 @@ function initApp() {
     renderSelectedIndividuals();
   }
 }
+
+// Inicializar cuando se cargue la página
+window.onload = initApp;
