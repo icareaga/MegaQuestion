@@ -89,7 +89,7 @@ th {
 }
 
 .status.enprogreso {
-  background-color: var(--secondary-color);
+  background-color: orange;
   color: white;
 }
 

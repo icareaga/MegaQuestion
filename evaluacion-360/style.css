@@ -1,0 +1,442 @@
+/* ESTILOS PARA EVALUACIÓN 360°
+   Este archivo contiene los estilos para la página de evaluación 360° y el panel de usuario
+ */
+
+/* Variables CSS para mantener consistencia */
+:root {
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --accent-color: #e74c3c;
+  --success-color: #2ecc71;
+  --danger-color: #e74c3c;
+  --warning-color: #f39c12;
+  --info-color: #3498db;
+  --gray-color: #95a5a6;
+  --light-gray: #ecf0f1;
+  --dark-gray: #0d47a1;
+  --border-radius: 8px;
+  --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos generales */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f5f7fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Estilos para la cabecera */
+.header {
+  background: linear-gradient(135deg, var(--primary-color), var(--dark-gray));
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--box-shadow);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.mega-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.mega-subtitle {
+  background-color: var(--secondary-color);
+  padding: 5px 15px;
+  font-size: 1.5rem;
+  font-weight: 300;
+  border-radius: var(--border-radius);
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.username {
+  font-weight: 500;
+}
+
+/* Estilos para botones */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.logout-btn {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.logout-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.success {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.danger {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.warning {
+  background-color: var(--warning-color);
+  color: white;
+}
+
+.info {
+  background-color: var(--info-color);
+  color: white;
+}
+
+/* Contenedor principal */
+.main-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Sección de bienvenida */
+.welcome-section {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.welcome-section h1 {
+  color: var(--primary-color);
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.welcome-section p {
+  color: var(--gray-color);
+  font-size: 1.1rem;
+}
+
+/* Estilos para tarjetas de resumen */
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.summary-card {
+  background-color: white;
+  border-radius: var(--border-radius);
+  padding: 15px;
+  text-align: center;
+  border-top: 4px solid var(--secondary-color);
+  box-shadow: var(--box-shadow);
+}
+
+.summary-card.included {
+  border-top-color: var(--success-color);
+}
+
+.summary-card.excluded {
+  border-top-color: var(--warning-color);
+}
+
+.summary-icon {
+  font-size: 2rem;
+  color: var(--secondary-color);
+}
+
+.included .summary-icon {
+  color: var(--success-color);
+}
+
+.excluded .summary-icon {
+  color: var(--warning-color);
+}
+
+.summary-number {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 10px 0;
+}
+
+.included .summary-number {
+  color: var(--success-color);
+}
+
+.excluded .summary-number {
+  color: var(--warning-color);
+}
+
+.summary-label {
+  font-size: 0.9rem;
+  color: var(--gray-color);
+}
+
+/* Estilos para el menu de pendientes */
+.pending-menu {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.pending-menu select {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+}
+
+.pending-menu select:focus {
+  border-color: var(--secondary-color);
+  outline: none;
+}
+
+/* Estilos para la mini encuesta */
+#mini-survey-section {
+  background: white;
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+#mini-survey-section h2 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#mini-survey-form .form-group {
+  margin-bottom: 1rem;
+}
+
+#mini-survey-form label {
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+#mini-survey-form input[type="number"],
+#mini-survey-form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+}
+
+#mini-survey-form input[type="number"]:focus,
+#mini-survey-form textarea:focus {
+  border-color: var(--secondary-color);
+  outline: none;
+}
+
+#mini-survey-form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Estilos para la selección de participantes (disponibles) */
+.participants-selection {
+  background: white;
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+.participants-selection h2 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-container {
+  margin-bottom: 15px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+}
+
+.search-input:focus {
+  border-color: var(--secondary-color);
+  outline: none;
+}
+
+.individuals-container {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+  padding: 10px;
+  background: white;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.checkbox-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: var(--border-radius);
+  transition: background-color 0.2s;
+  border: 1px solid #eee;
+}
+
+.checkbox-option:hover {
+  background-color: #f5f5f5;
+}
+
+.checkbox-label {
+  user-select: none;
+  font-weight: normal;
+}
+
+/* Estilos para listas de evaluados y pendientes */
+.selected-individuals {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: var(--border-radius);
+  background-color: #fafafa;
+}
+
+.selected-individual {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background-color: white;
+  border-radius: var(--border-radius);
+  border-left: 4px solid var(--success-color);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+}
+
+.selected-individual:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+
+.selected-individual-info {
+  flex: 1;
+}
+
+.selected-individual-info strong {
+  color: var(--primary-color);
+}
+
+.selected-individual-info small {
+  color: var(--gray-color);
+}
+
+.status {
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  display: inline-block;
+}
+
+.status.pendiente {
+  background-color: var(--warning-color);
+  color: white;
+}
+
+.status.finalizada {
+  background-color: var(--success-color);
+  color: white;
+}
+
+/* Estilos para el pie de página */
+.footer {
+  background-color: var(--dark-gray);
+  color: white;
+  text-align: center;
+  padding: 2rem;
+  margin-top: 3rem;
+}
+
+.copyright {
+  line-height: 1.8;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .welcome-section h1 {
+    font-size: 2rem;
+  }
+
+  .summary-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .pending-menu {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .pending-menu select {
+    width: 100%;
+  }
+
+  .individuals-container,
+  .selected-individuals {
+    max-height: 200px;
+  }
+}

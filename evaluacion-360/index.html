@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEGA - Evaluación 360°</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <a href="../panel-usuario.html" class="logo-link">
+        <img src="../img/Logo.jpg" alt="MEGA Logo" class="mega-logo">
+      </a>
+      <h2 class="mega-subtitle">MegaQuestion - Evaluación 360° TI</h2>
+    </div>
+    <div class="user-menu">
+      <span class="username">Juan Pérez</span>
+      <button class="btn logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Salir
+      </button>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <main class="main-content">
+      <div class="welcome-section">
+        <h1>Evaluación 360°: Evaluación de Clima TI</h1>
+        <p>Selecciona compañeros del departamento de TI para evaluar. Revisa quiénes te faltan por evaluar abajo.</p>
+        <div class="summary-cards">
+          <div class="summary-card included">
+            <i class="fas fa-check-circle summary-icon"></i>
+            <div class="summary-number" id="evaluated-count">1</div>
+            <div class="summary-label">Evaluados</div>
+          </div>
+          <div class="summary-card excluded">
+            <i class="fas fa-exclamation-circle summary-icon"></i>
+            <div class="summary-number" id="pending-count">2</div>
+            <div class="summary-label">Pendientes</div>
+          </div>
+        </div>
+      </div>
+
+      <section class="section">
+        <h2><i class="fas fa-users"></i> Selecciona Pendientes por Evaluar</h2>
+        <div class="pending-menu">
+          <select id="pending-select" class="form-group">
+            <option value="">Selecciona un compañero pendiente...</option>
+          </select>
+          <button class="btn info" onclick="loadMiniSurvey()">Cargar Encuesta</button>
+        </div>
+      </section>
+
+      <section class="section participants-selection" id="mini-survey-section" style="display: none;">
+        <h2><i class="fas fa-clipboard-list"></i> Evaluación para <span id="survey-companion-name"></span></h2>
+        <form id="mini-survey-form">
+          <div class="form-group">
+            <label for="collaboration">Colaboración (1-5):</label>
+            <input type="number" id="collaboration" min="1" max="5" required>
+          </div>
+          <div class="form-group">
+            <label for="communication">Comunicación (1-5):</label>
+            <input type="number" id="communication" min="1" max="5" required>
+          </div>
+          <div class="form-group">
+            <label for="comments">Comentarios:</label>
+            <textarea id="comments" rows="4"></textarea>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn success">Enviar Evaluación</button>
+            <button type="button" class="btn danger" onclick="hideMiniSurvey()">Cancelar</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="section">
+        <h2><i class="fas fa-check-circle"></i> Evaluados</h2>
+        <div class="selected-individuals" id="evaluated-list">
+          <!-- Lista dinámica -->
+        </div>
+      </section>
+
+      <section class="section">
+        <h2><i class="fas fa-exclamation-circle"></i> Pendientes por Evaluar</h2>
+        <div class="selected-individuals" id="pending-list">
+          <!-- Lista dinámica -->
+        </div>
+      </section>
+
+      <section class="section participants-selection">
+        <h2><i class="fas fa-users"></i> Selecciona Compañeros Disponibles</h2>
+        <div class="search-container">
+          <input type="text" id="search-companions" class="form-group search-input" placeholder="Buscar compañeros...">
+        </div>
+        <div class="individuals-container" id="companions-list">
+          <div class="checkbox-group">
+            <!-- Lista dinámica -->
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn success" onclick="evaluarSeleccionados()">Evaluar Seleccionados</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <p class="copyright">Derechos Reservados <br>
+      Desarrollado por Equipo UTOE <br>
+      MEGA @Copy 2025</p>
+  </footer>
+
+  <script>
+    // Datos iniciales de compañeros (simulados)
+    const companions = [
+      { id: 1, name: "Ana López", role: "Desarrolladora Frontend", status: "available" },
+      { id: 2, name: "Carlos Ramírez", role: "Analista de Sistemas", status: "available" },
+      { id: 3, name: "María González", role: "Ingeniera DevOps", status: "available" },
+      { id: 4, name: "Pedro Sánchez", role: "Desarrollador Backend", status: "evaluated" },
+      { id: 5, name: "Laura Martínez", role: "Administradora de Bases de Datos", status: "pending" },
+      { id: 6, name: "Javier Torres", role: "Líder Técnico", status: "pending" }
+    ];
+
+    // Función para actualizar listas
+    function updateLists() {
+      const evaluatedList = document.getElementById('evaluated-list');
+      const pendingList = document.getElementById('pending-list');
+      const companionsList = document.getElementById('companions-list').querySelector('.checkbox-group');
+      const pendingSelect = document.getElementById('pending-select');
+      const searchInput = document.getElementById('search-companions').value.toLowerCase();
+
+      // Limpiar listas
+      evaluatedList.innerHTML = '';
+      pendingList.innerHTML = '';
+      companionsList.innerHTML = '';
+      pendingSelect.innerHTML = '<option value="">Selecciona un compañero pendiente...</option>';
+
+      // Filtrar y mostrar compañeros
+      companions.forEach(companion => {
+        const name = companion.name.toLowerCase();
+        if (searchInput && !name.includes(searchInput) && companion.status === 'available') return;
+
+        if (companion.status === 'evaluated') {
+          evaluatedList.innerHTML += `
+            <div class="selected-individual">
+              <div class="selected-individual-info">
+                <strong>${companion.name}</strong> <small>- ${companion.role}</small>
+              </div>
+              <span class="status finalizada">Completado</span>
+            </div>`;
+        } else if (companion.status === 'pending') {
+          pendingList.innerHTML += `
+            <div class="selected-individual">
+              <div class="selected-individual-info">
+                <strong>${companion.name}</strong> <small>- ${companion.role}</small>
+              </div>
+              <span class="status pendiente">Pendiente</span>
+            </div>`;
+          pendingSelect.innerHTML += `<option value="${companion.id}" data-name="${companion.name}" data-role="${companion.role}">${companion.name} - ${companion.role}</option>`;
+        } else if (companion.status === 'available') {
+          companionsList.innerHTML += `
+            <label class="checkbox-option">
+              <input type="checkbox" name="companion" value="${companion.id}" data-name="${companion.name}" data-role="${companion.role}">
+              <span class="checkbox-label">${companion.name} - ${companion.role}</span>
+            </label>`;
+        }
+      });
+
+      // Actualizar contadores
+      document.getElementById('evaluated-count').textContent = companions.filter(c => c.status === 'evaluated').length;
+      document.getElementById('pending-count').textContent = companions.filter(c => c.status === 'pending').length;
+    }
+
+    // Función para cargar la mini encuesta
+    function loadMiniSurvey() {
+      const select = document.getElementById('pending-select');
+      const companionId = select.value;
+      if (!companionId) {
+        alert('Por favor, selecciona un compañero pendiente.');
+        return;
+      }
+
+      const companionName = select.options[select.selectedIndex].dataset.name;
+      document.getElementById('survey-companion-name').textContent = companionName;
+      document.getElementById('mini-survey-form').dataset.companionId = companionId;
+      document.getElementById('mini-survey-section').style.display = 'block';
+
+      // Desplazar a la mini encuesta
+      document.getElementById('mini-survey-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Función para ocultar la mini encuesta
+    function hideMiniSurvey() {
+      document.getElementById('mini-survey-section').style.display = 'none';
+      document.getElementById('mini-survey-form').reset();
+    }
+
+    // Manejar envío de la mini encuesta
+    document.getElementById('mini-survey-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const companionId = this.dataset.companionId;
+      const companion = companions.find(c => c.id == companionId);
+      if (companion) {
+        companion.status = 'evaluated';
+        updateLists();
+        hideMiniSurvey();
+        alert(`Evaluación enviada para ${companion.name}`);
+      }
+    });
+
+    // Función para evaluar seleccionados (manteniendo funcionalidad anterior)
+    function evaluarSeleccionados() {
+      const selected = document.querySelectorAll('input[name="companion"]:checked');
+      if (selected.length === 0) {
+        alert('Por favor, selecciona al menos un compañero disponible.');
+        return;
+      }
+
+      selected.forEach(input => {
+        const companionId = input.value;
+        const companion = companions.find(c => c.id == companionId);
+        if (companion) {
+          companion.status = 'pending'; // Mover a pendientes como ejemplo
+        }
+      });
+      updateLists();
+      alert('Compañeros seleccionados movidos a pendientes.');
+    }
+
+    // Filtrar compañeros por búsqueda
+    document.getElementById('search-companions').addEventListener('input', updateLists);
+
+    // Inicializar listas
+    updateLists();
+  </script>
+</body>
+</html>
