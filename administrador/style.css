@@ -1,97 +1,190 @@
-/* ============================
-   Estilos generales
-============================= */
+/* ESTILOS PARA PANEL DE ADMINISTRACIÓN
+   Este archivo contiene los estilos para el panel de administrador y estadísticas detalladas
+*/
 
+/* Variables CSS para mantener consistencia */
 :root {
   --primary-color: #0d47a1;
   --danger-color: #dc3545;
+  --success-color: #2ecc71;
+  --warning-color: #f39c12;
+  --gray-color: #95a5a6;
+  --light-gray: #f4f6f9;
   --border-radius: 6px;
   --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   --font-color: #333;
 }
 
-body {
-  font-family: 'Roboto', sans-serif;
-  background-color: #f4f6f9;
+/* Estilos generales */
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--light-gray);
   color: var(--font-color);
 }
 
-/* ============================
-   Panel de administración
-============================= */
+/* Estilos para la cabecera */
+.header {
+  background: linear-gradient(135deg, var(--primary-color), #1565c0);
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--box-shadow);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.mega-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.mega-subtitle {
+  background-color: #2196f3;
+  padding: 5px 15px;
+  font-size: 1.5rem;
+  font-weight: 300;
+  border-radius: var(--border-radius);
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.username {
+  font-weight: 500;
+}
+
+/* Estilos para botones */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: var(--border-radius);
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.logout-btn {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.logout-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.success {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.danger {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.danger:hover {
+  background-color: #b71c1c;
+}
+
+/* Contenedor principal */
+.main-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Sección de bienvenida */
+.welcome-section {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.welcome-section h1 {
+  color: var(--primary-color);
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
 
 .admin-actions {
   display: flex;
   gap: 15px;
   margin: 1.5rem 0;
+  justify-content: center;
 }
 
 .admin-actions .btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  border-radius: 5px;
   background-color: var(--primary-color);
   color: white;
-  border: none;
-  cursor: pointer;
-  transition: 0.3s;
 }
 
-.btn.danger {
-  background-color: var(--danger-color);
-  margin-left: 8px;
-}
-
-.btn.danger:hover {
-  background-color: #b71c1c;
-}
-
-.btn:hover {
-  opacity: 0.9;
-}
-
-/* ============================
-   Tabla de Encuestas Activas
-============================= */
-
+/* Tablas */
 .table-container {
   overflow-x: auto;
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
 
-.table-container table {
+table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 10px;
   font-size: 16px;
 }
 
-.table-container th,
-.table-container td {
+th, td {
   padding: 14px 20px;
   text-align: left;
 }
 
-.table-container th {
-  font-weight: bold;
-  color: var(--font-color);
+th {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 700;
 }
 
-.table-container tbody tr {
+tbody tr {
   background-color: white;
-  border-radius: 6px;
+  border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
 }
 
-.table-container .btn {
-  padding: 8px 12px;
-  font-size: 14px;
+td[data-label="Departamento"] {
+  font-style: italic;
+  color: var(--gray-color);
 }
 
-/* Etiqueta de estado */
 .status.enprogreso {
   background-color: #e0f7fa;
   color: #00796b;
@@ -100,35 +193,7 @@ body {
   font-weight: 600;
 }
 
-/* ============================
-   Estadísticas generales
-============================= */
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-}
-
-.stat-card {
-  background: white;
-  border-radius: var(--border-radius);
-  padding: 20px;
-  box-shadow: var(--box-shadow);
-  text-align: center;
-}
-
-.stat-value {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--primary-color);
-  margin-top: 10px;
-}
-
-/* ============================
-   Estadísticas Detalladas (con filtros)
-============================= */
-
+/* Estadísticas detalladas */
 .stats-filter {
   margin-bottom: 20px;
   display: flex;
@@ -154,9 +219,22 @@ body {
   box-shadow: 0 0 5px var(--primary-color);
 }
 
-/* ============================
-   Tabla de Estadísticas Detalladas
-============================= */
+.stats-filter .search-input {
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  min-width: 140px;
+  background-color: white;
+  transition: border-color 0.3s ease;
+}
+
+.stats-filter .search-input:hover,
+.stats-filter .search-input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 5px var(--primary-color);
+}
 
 .stats-table {
   width: 100%;
@@ -183,10 +261,7 @@ body {
   font-weight: 700;
 }
 
-/* ============================
-   Barras de colores (rojo, amarillo, verde)
-============================= */
-
+/* Barras de colores */
 .bar-container {
   display: flex;
   height: 22px;
@@ -226,11 +301,49 @@ body {
   gap: 5px;
 }
 
-/* ============================
-   Responsive
-============================= */
+/* Estadísticas resumen */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
 
+.stat-card {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 20px;
+  box-shadow: var(--box-shadow);
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-top: 10px;
+}
+
+/* Pie de página */
+.footer {
+  background-color: var(--primary-color);
+  color: white;
+  text-align: center;
+  padding: 2rem;
+  margin-top: 3rem;
+}
+
+.copyright {
+  line-height: 1.8;
+}
+
+/* Estilos responsivos */
 @media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
   .admin-actions {
     flex-direction: column;
   }
@@ -240,26 +353,43 @@ body {
   }
 
   .stats-filter {
-    justify-content: flex-start;
+    flex-direction: column;
+    gap: 10px;
   }
 
-  .stats-table {
-    font-size: 14px;
+  table {
+    display: block;
   }
 
-  .table-container table {
-    font-size: 14px;
+  thead {
+    display: none;
+  }
+
+  tr {
+    display: block;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #eee;
+  }
+
+  td {
+    display: block;
+    text-align: right;
+    position: relative;
+    padding-left: 50%;
+  }
+
+  td:before {
+    content: attr(data-label);
+    position: absolute;
+    left: 12px;
+    font-weight: 500;
+    color: var(--primary-color);
   }
 }
 
 @media (max-width: 480px) {
   .stats-grid {
     grid-template-columns: 1fr;
-  }
-
-  .stats-filter {
-    flex-direction: column;
-    gap: 10px;
   }
 
   .stats-table,

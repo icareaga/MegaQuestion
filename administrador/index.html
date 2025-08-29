@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MEGA - Panel de Administración</title>
-  <link rel="stylesheet" href="../css/style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="header">
     <div class="header-content">
       <a href="../index.html" class="logo-link">
-        <img src="../img/Logo.jpg" alt="MEGA Logo" class="mega-logo" />
+        <img src="../img/Logo.jpg" alt="MEGA Logo" class="mega-logo">
       </a>
       <h2 class="mega-subtitle">MegaQuestion - Administrador</h2>
     </div>
@@ -39,75 +38,78 @@
         </div>
       </div>
 
-    <section class="section">
-  <h2><i class="fas fa-poll"></i><b> Encuestas Activas</b></h2><br>
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Fecha Inicio</th>
-          <th>Fecha Fin</th>
-          <th>Estado</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td data-label="Nombre">Evaluación 360°</td>
-          <td data-label="Inicio">01/08/2025</td>
-          <td data-label="Fin">30/08/2025</td>
-          <td data-label="Participantes">45/60</td>
-          <td data-label="Estado"><span class="status enprogreso">En curso</span></td>
-          <td data-label="Acciones">
-            <button class="btn"><i class="fas fa-edit"></i></button>
-            <button class="btn danger"><i class="fas fa-trash"></i></button>
-          </td>
-        </tr>
-        <tr>
-          <td data-label="Nombre">Clima Laboral</td>
-          <td data-label="Inicio">15/07/2025</td>
-          <td data-label="Fin">15/09/2025</td>
-          <td data-label="Participantes">32/50</td>
-          <td data-label="Estado"><span class="status enprogreso">En curso</span></td>
-          <td data-label="Acciones">
-            <button class="btn"><i class="fas fa-edit"></i></button>
-            <button class="btn danger"><i class="fas fa-trash"></i></button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-      <br><br>
+      <section class="section">
+        <h2><i class="fas fa-poll"></i> Encuestas Activas</h2>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Fin</th>
+                <th>Participantes</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-label="Nombre">Evaluación 360°</td>
+                <td data-label="Inicio">01/08/2025</td>
+                <td data-label="Fin">30/08/2025</td>
+                <td data-label="Participantes">45/60</td>
+                <td data-label="Estado"><span class="status enprogreso">En curso</span></td>
+                <td data-label="Acciones">
+                  <button class="btn"><i class="fas fa-edit"></i></button>
+                  <button class="btn danger"><i class="fas fa-trash"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td data-label="Nombre">Clima Laboral</td>
+                <td data-label="Inicio">15/07/2025</td>
+                <td data-label="Fin">15/09/2025</td>
+                <td data-label="Participantes">32/50</td>
+                <td data-label="Estado"><span class="status enprogreso">En curso</span></td>
+                <td data-label="Acciones">
+                  <button class="btn"><i class="fas fa-edit"></i></button>
+                  <button class="btn danger"><i class="fas fa-trash"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
 
       <section class="section">
         <h2><i class="fas fa-chart-bar"></i> Estadísticas Detalladas</h2>
-
         <div class="stats-filter">
+          <select id="filter-type">
+            <option value="general">-- Seleccionar Tipo --</option>
+            <option value="department">Por Departamento</option>
+            <option value="person">Por Persona</option>
+          </select>
           <select id="region">
             <option value="">-- Seleccionar Región --</option>
             <option value="Noreste">Noreste</option>
-            <option value="Suroeste ">Suroeste</option>
+            <option value="Suroeste">Suroeste</option>
             <option value="Occidente">Occidente</option>
           </select>
           <select id="departamento">
             <option value="">-- Seleccionar Departamento --</option>
-            <option value="Valle">Legal</option>
-            <option value="Antioquia">TI</option>
-            <option value="Sonora">Finanzas</option>
+            <option value="Legal">Legal</option>
+            <option value="TI">TI</option>
+            <option value="Finanzas">Finanzas</option>
           </select>
           <select id="ciudad">
             <option value="">-- Seleccionar Ciudad --</option>
-            <option value="Cali">GUADALAJARA</option>
-            <option value="Medellin">CIUDAD DE MEXICO </option>
-            <option value="Hermosillo">HERMOSILLO</option>
+            <option value="GUADALAJARA">GUADALAJARA</option>
+            <option value="CIUDAD DE MEXICO">CIUDAD DE MEXICO</option>
+            <option value="HERMOSILLO">HERMOSILLO</option>
           </select>
+          <input type="text" id="person-search" class="search-input" placeholder="Buscar persona..." style="display: none;">
         </div>
-
         <table class="stats-table">
-          <thead>
+          <thead id="stats-table-head">
             <tr>
               <th>Categoría</th>
               <th>Resultados</th>
@@ -147,22 +149,36 @@
 
   <footer class="footer">
     <p class="copyright">
-      Derechos Reservados <br />
-      Desarrollado por Equipo UTOE <br />
+      Derechos Reservados <br>
+      Desarrollado por Equipo UTOE <br>
       MEGA @Copy 2025
     </p>
   </footer>
 
-  <!-- SCRIPT DE DATOS FICTICIOS -->
   <script>
-    const tabla = document.getElementById("tablaDatos");
-    const filtros = ["region", "departamento", "ciudad"];
+    // Datos ficticios para usuarios (enfocado en TI para personas)
+    const users = [
+      { id: 1, name: "Ana López", department: "TI", role: "Desarrolladora Frontend" },
+      { id: 2, name: "Carlos Ramírez", department: "TI", role: "TI Analyst" },
+      { id: 3, name: "María González", department: "TI", role: "Ingeniera DevOps" },
+      { id: 4, name: "Pedro Sánchez", department: "TI", role: "Desarrollador Backend" },
+      { id: 5, name: "Laura Martínez", department: "TI", role: "Administradora de Bases de Datos" },
+      { id: 6, name: "Javier Torres", department: "TI", role: "Líder Técnico" },
+      { id: 7, name: "Sofia Ruiz", department: "Legal", role: "Abogada Corporativa" },
+      { id: 8, name: "Miguel Ortega", department: "Finanzas", role: "Contador" },
+      { id: 9, name: "Elena Vargas", department: "TI", role: "Especialista en Seguridad" },
+      { id: 10, name: "Roberto Diaz", department: "TI", role: "Administrador de Redes" }
+    ];
 
+    // Datos ficticios para departamentos
+    const departments = ["TI", "Legal", "Finanzas"];
+
+    // Generar datos ficticios para estadísticas
     function rand(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    function generarDatosFicticios() {
+    function generarDatosFicticios(filterType, selectedDepartment, searchTerm = '') {
       const categorias = [
         "Calidad",
         "Objetivos",
@@ -173,30 +189,59 @@
         "Comunicación"
       ];
 
-      return categorias.map(categoria => {
-        let rojo = rand(0, 20);
-        let amarillo = rand(10, 30);
-        let verde = 100 - rojo - amarillo;
-
-        if (verde < 0) {
-          verde = rand(50, 80);
-          rojo = rand(0, 20);
-          amarillo = 100 - verde - rojo;
-        }
-
-        const total = verde;
-        const cambio = rand(-10, 10);
-
-        return { categoria, rojo, amarillo, verde, total, cambio };
-      });
+      if (filterType === "department") {
+        return departments.map(dept => {
+          if (selectedDepartment && dept !== selectedDepartment) return null;
+          let rojo = rand(0, 20);
+          let amarillo = rand(10, 30);
+          let verde = 100 - rojo - amarillo;
+          if (verde < 0) {
+            verde = rand(50, 80);
+            rojo = rand(0, 20);
+            amarillo = 100 - verde - rojo;
+          }
+          const total = verde;
+          const cambio = rand(-10, 10);
+          return { categoria: dept, rojo, amarillo, verde, total, cambio };
+        }).filter(item => item !== null);
+      } else if (filterType === "person") {
+        return users
+          .filter(user => (!selectedDepartment || user.department === selectedDepartment) && (!searchTerm || user.name.toLowerCase().includes(searchTerm.toLowerCase())))
+          .map(user => {
+            let rojo = rand(0, 20);
+            let amarillo = rand(10, 30);
+            let verde = 100 - rojo - amarillo;
+            if (verde < 0) {
+              verde = rand(50, 80);
+              rojo = rand(0, 20);
+              amarillo = 100 - verde - rojo;
+            }
+            const total = verde;
+            const cambio = rand(-10, 10);
+            return { categoria: `${user.name} (${user.role})`, rojo, amarillo, verde, total, cambio };
+          });
+      } else {
+        return categorias.map(categoria => {
+          let rojo = rand(0, 20);
+          let amarillo = rand(10, 30);
+          let verde = 100 - rojo - amarillo;
+          if (verde < 0) {
+            verde = rand(50, 80);
+            rojo = rand(0, 20);
+            amarillo = 100 - verde - rojo;
+          }
+          const total = verde;
+          const cambio = rand(-10, 10);
+          return { categoria, rojo, amarillo, verde, total, cambio };
+        });
+      }
     }
 
     function renderTabla(datos) {
+      const tabla = document.getElementById("tablaDatos");
       tabla.innerHTML = "";
-
       datos.forEach(item => {
         const fila = document.createElement("tr");
-
         const barHTML = `
           <div class="bar-container">
             <div class="bar-red" style="width: ${item.rojo}%"></div>
@@ -204,32 +249,55 @@
             <div class="bar-green" style="width: ${item.verde}%"></div>
           </div>
         `;
-
         const cambioHTML = item.cambio >= 0
           ? `<span class="change-up"><i class="fas fa-arrow-up"></i> ${item.cambio}%</span>`
           : `<span class="change-down"><i class="fas fa-arrow-down"></i> ${Math.abs(item.cambio)}%</span>`;
-
         fila.innerHTML = `
           <td>${item.categoria}</td>
           <td>${barHTML}</td>
           <td>${item.total}%</td>
           <td>${cambioHTML}</td>
         `;
-
         tabla.appendChild(fila);
       });
     }
 
+    // Actualizar encabezado de la tabla según el filtro
+    function updateTableHeader(filterType) {
+      const thead = document.getElementById("stats-table-head");
+      thead.innerHTML = `
+        <tr>
+          <th>${filterType === "department" ? "Departamento" : filterType === "person" ? "Persona" : "Categoría"}</th>
+          <th>Resultados</th>
+          <th>Total</th>
+          <th>Cambio</th>
+        </tr>
+      `;
+    }
+
+    // Manejar filtros
+    const filtros = ["filter-type", "region", "departamento", "ciudad"];
     filtros.forEach(id => {
-      document.getElementById(id).addEventListener("change", () => {
-        renderTabla(generarDatosFicticios());
-      });
+      document.getElementById(id).addEventListener("change", updateTable);
     });
 
-    // Carga inicial
-    renderTabla(generarDatosFicticios());
-  </script>
+    // Manejar búsqueda de personas
+    document.getElementById("person-search").addEventListener("input", updateTable);
 
-  <script src="../js/main.js"></script>
+    function updateTable() {
+      const filterType = document.getElementById("filter-type").value;
+      const selectedDepartment = document.getElementById("departamento").value;
+      const searchTerm = document.getElementById("person-search").value;
+
+      const personSearch = document.getElementById("person-search");
+      personSearch.style.display = filterType === "person" ? "block" : "none";
+
+      updateTableHeader(filterType);
+      renderTabla(generarDatosFicticios(filterType, selectedDepartment, searchTerm));
+    }
+
+    // Carga inicial
+    updateTable();
+  </script>
 </body>
 </html>
