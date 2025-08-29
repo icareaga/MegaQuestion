@@ -19,7 +19,7 @@
     </div>
     <div class="user-menu">
       <span class="username">Admin User</span>
-      <button class="btn logout-btn" onclick="logout()">
+      <button class="btn logout-btn" data-action="logout" aria-label="Cerrar sesión">
         <i class="fas fa-sign-out-alt"></i> Salir
       </button>
     </div>
@@ -39,10 +39,10 @@
 
       <!-- Botones de acción rápida -->
       <div class="quick-actions">
-        <button type="button" class="btn" onclick="window.location.href='plantillas.html'">
+        <button type="button" class="btn" data-action="use-template" aria-label="Usar plantilla existente">
           <i class="fas fa-clone"></i> Usar Plantilla Existente
         </button> 
-        <button type="button" class="btn success" onclick="saveAsTemplate()">
+        <button type="button" class="btn success" data-action="save-template" aria-label="Guardar como plantilla">
           <i class="fas fa-save"></i> Guardar como Plantilla
         </button>
       </div>
@@ -55,22 +55,22 @@
           
           <div class="form-group">
             <label for="surveyName">Nombre de la Encuesta</label>
-            <input type="text" id="surveyName" placeholder="Ej: Evaluación 360° 2025" required>
+            <input type="text" id="surveyName" placeholder="Ej: Evaluación 360° 2025" required aria-required="true">
           </div>
           
           <div class="form-group">
             <label for="surveyDescription">Descripción</label>
-            <textarea id="surveyDescription" rows="3" placeholder="Descripción de la encuesta"></textarea>
+            <textarea id="surveyDescription" rows="3" placeholder="Descripción de la encuesta" aria-label="Descripción de la encuesta"></textarea>
           </div>
           
           <div class="form-row">
             <div class="form-group">
               <label for="startDate">Fecha de Inicio</label>
-              <input type="date" id="startDate" required>
+              <input type="date" id="startDate" required aria-required="true">
             </div>
             <div class="form-group">
               <label for="endDate">Fecha de Fin</label>
-              <input type="date" id="endDate" required>
+              <input type="date" id="endDate" required aria-required="true">
             </div>
           </div>
         </section>
@@ -83,19 +83,19 @@
             <label>Tipo de Evaluación:</label>
             <div class="radio-group">
               <label class="radio-option">
-                <input type="radio" name="evalType" value="0" checked>
+                <input type="radio" name="evalType" value="0" checked aria-label="Autoevaluación (0°)">
                 <span class="radio-label">0° (Autoevaluación)</span>
               </label>
               <label class="radio-option">
-                <input type="radio" name="evalType" value="90">
+                <input type="radio" name="evalType" value="90" aria-label="Evaluación de jefe a subordinado (90°)">
                 <span class="radio-label">90° (Jefe → Subordinado)</span>
               </label>
               <label class="radio-option">
-                <input type="radio" name="evalType" value="180">
+                <input type="radio" name="evalType" value="180" aria-label="Evaluación bidireccional (180°)">
                 <span class="radio-label">180° (Bidireccional)</span>
               </label>
               <label class="radio-option">
-                <input type="radio" name="evalType" value="360">
+                <input type="radio" name="evalType" value="360" aria-label="Evaluación multidimensional (360°)">
                 <span class="radio-label">360° (Multidimensional)</span>
               </label>
             </div>
@@ -105,11 +105,11 @@
             <label for="participantsType">Tipo de Selección:</label>
             <div class="radio-group">
               <label class="radio-option">
-                <input type="radio" name="participantsType" value="departments" checked onchange="toggleParticipantsSelection()">
+                <input type="radio" name="participantsType" value="departments" checked aria-label="Seleccionar por departamentos">
                 <span class="radio-label">Seleccionar por Departamentos</span>
               </label>
               <label class="radio-option">
-                <input type="radio" name="participantsType" value="individuals" onchange="toggleParticipantsSelection()">
+                <input type="radio" name="participantsType" value="individuals" aria-label="Seleccionar por individuos">
                 <span class="radio-label">Seleccionar Individuos</span>
               </label>
             </div>
@@ -125,19 +125,19 @@
               </div>
               <div class="checkbox-group">
                 <label class="checkbox-option">
-                  <input type="checkbox" id="dept-ventas" name="departments" value="Ventas" onchange="toggleDepartmentSelection('Ventas')">
+                  <input type="checkbox" id="dept-ventas" name="departments" value="Ventas" aria-label="Incluir Departamento de Ventas">
                   <span class="checkbox-label">Departamento de Ventas</span>
                 </label>
                 <label class="checkbox-option">
-                  <input type="checkbox" id="dept-ti" name="departments" value="TI" onchange="toggleDepartmentSelection('TI')">
+                  <input type="checkbox" id="dept-ti" name="departments" value="TI" aria-label="Incluir Departamento de TI">
                   <span class="checkbox-label">Departamento de TI</span>
                 </label>
                 <label class="checkbox-option">
-                  <input type="checkbox" id="dept-rh" name="departments" value="RH" onchange="toggleDepartmentSelection('RH')">
+                  <input type="checkbox" id="dept-rh" name="departments" value="RH" aria-label="Incluir Departamento de RH">
                   <span class="checkbox-label">Departamento de RH</span>
                 </label>
                 <label class="checkbox-option">
-                  <input type="checkbox" id="dept-gerencia" name="departments" value="Gerencia" onchange="toggleDepartmentSelection('Gerencia')">
+                  <input type="checkbox" id="dept-gerencia" name="departments" value="Gerencia" aria-label="Incluir Gerencia">
                   <span class="checkbox-label">Gerencia</span>
                 </label>
               </div>
@@ -145,7 +145,7 @@
             
             <!-- Departamento de Ventas -->
             <div class="department-section" id="dept-section-ventas" style="display: none;">
-              <div class="department-header" onclick="toggleDepartmentExpand('ventas')">
+              <div class="department-header" data-action="toggle-expand" data-dept="ventas">
                 <div class="department-title">
                   <i class="fas fa-building"></i>
                   <span>Ventas - 4 personas</span>
@@ -163,29 +163,29 @@
                   <p class="help-text">Marca las casillas de las personas que deseas <strong>excluir</strong> de este departamento.</p>
                   
                   <div class="people-list">
-                    <div class="person-item">
-                      <input type="checkbox" id="exclude-ventas-1" class="exclude-checkbox" onchange="toggleExclusion('Ventas', 1)">
+                    <div class="person-item person-list-item">
+                      <input type="checkbox" id="exclude-ventas-1" class="exclude-checkbox" aria-label="Excluir a Juan Pérez de Ventas">
                       <div class="person-info">
                         <div class="person-name">Juan Pérez</div>
                         <div class="person-email">juan.perez@empresa.com</div>
                       </div>
                     </div>
-                    <div class="person-item">
-                      <input type="checkbox" id="exclude-ventas-2" class="exclude-checkbox" onchange="toggleExclusion('Ventas', 2)">
+                    <div class="person-item person-list-item">
+                      <input type="checkbox" id="exclude-ventas-2" class="exclude-checkbox" aria-label="Excluir a María García de Ventas">
                       <div class="person-info">
                         <div class="person-name">María García</div>
                         <div class="person-email">maria.garcia@empresa.com</div>
                       </div>
                     </div>
-                    <div class="person-item">
-                      <input type="checkbox" id="exclude-ventas-3" class="exclude-checkbox" onchange="toggleExclusion('Ventas', 3)">
+                    <div class="person-item person-list-item">
+                      <input type="checkbox" id="exclude-ventas-3" class="exclude-checkbox" aria-label="Excluir a Jorge Sánchez de Ventas">
                       <div class="person-info">
                         <div class="person-name">Jorge Sánchez</div>
                         <div class="person-email">jorge.sanchez@empresa.com</div>
                       </div>
                     </div>
-                    <div class="person-item">
-                      <input type="checkbox" id="exclude-ventas-4" class="exclude-checkbox" onchange="toggleExclusion('Ventas', 4)">
+                    <div class="person-item person-list-item">
+                      <input type="checkbox" id="exclude-ventas-4" class="exclude-checkbox" aria-label="Excluir a Ana López de Ventas">
                       <div class="person-info">
                         <div class="person-name">Ana López</div>
                         <div class="person-email">ana.lopez@empresa.com</div>
@@ -198,7 +198,7 @@
 
             <!-- Departamento de TI -->
             <div class="department-section" id="dept-section-ti" style="display: none;">
-              <div class="department-header" onclick="toggleDepartmentExpand('ti')">
+              <div class="department-header" data-action="toggle-expand" data-dept="ti">
                 <div class="department-title">
                   <i class="fas fa-laptop-code"></i>
                   <span>TI - 3 personas</span>
@@ -216,22 +216,22 @@
                   <p class="help-text">Marca las casillas de las personas que deseas <strong>excluir</strong> de este departamento.</p>
                   
                   <div class="people-list">
-                    <div class="person-item">
-                      <input type="checkbox" id="exclude-ti-5" class="exclude-checkbox" onchange="toggleExclusion('TI', 5)">
+                    <div class="person-item person-list-item">
+                      <input type="checkbox" id="exclude-ti-5" class="exclude-checkbox" aria-label="Excluir a Carlos López de TI">
                       <div class="person-info">
                         <div class="person-name">Carlos López</div>
                         <div class="person-email">carlos.lopez@empresa.com</div>
                       </div>
                     </div>
-                    <div class="person-item">
-                      <input type="checkbox" id="exclude-ti-6" class="exclude-checkbox" onchange="toggleExclusion('TI', 6)">
+                    <div class="person-item person-list-item">
+                      <input type="checkbox" id="exclude-ti-6" class="exclude-checkbox" aria-label="Excluir a Ana Martínez de TI">
                       <div class="person-info">
                         <div class="person-name">Ana Martínez</div>
                         <div class="person-email">ana.martinez@empresa.com</div>
                       </div>
                     </div>
-                    <div class="person-item">
-                      <input type="checkbox" id="exclude-ti-7" class="exclude-checkbox" onchange="toggleExclusion('TI', 7)">
+                    <div class="person-item person-list-item">
+                      <input type="checkbox" id="exclude-ti-7" class="exclude-checkbox" aria-label="Excluir a Elena Castro de TI">
                       <div class="person-info">
                         <div class="person-name">Elena Castro</div>
                         <div class="person-email">elena.castro@empresa.com</div>
@@ -244,7 +244,7 @@
 
             <!-- Departamento de RH -->
             <div class="department-section" id="dept-section-rh" style="display: none;">
-              <div class="department-header" onclick="toggleDepartmentExpand('rh')">
+              <div class="department-header" data-action="toggle-expand" data-dept="rh">
                 <div class="department-title">
                   <i class="fas fa-user-tie"></i>
                   <span>RH - 2 personas</span>
@@ -262,15 +262,15 @@
                   <p class="help-text">Marca las casillas de las personas que deseas <strong>excluir</strong> de este departamento.</p>
                   
                   <div class="people-list">
-                    <div class="person-item">
-                      <input type="checkbox" id="exclude-rh-8" class="exclude-checkbox" onchange="toggleExclusion('RH', 8)">
+                    <div class="person-item person-list-item">
+                      <input type="checkbox" id="exclude-rh-8" class="exclude-checkbox" aria-label="Excluir a Pedro Rodríguez de RH">
                       <div class="person-info">
                         <div class="person-name">Pedro Rodríguez</div>
                         <div class="person-email">pedro.rodriguez@empresa.com</div>
                       </div>
                     </div>
-                    <div class="person-item">
-                      <input type="checkbox" id="exclude-rh-9" class="exclude-checkbox" onchange="toggleExclusion('RH', 9)">
+                    <div class="person-item person-list-item">
+                      <input type="checkbox" id="exclude-rh-9" class="exclude-checkbox" aria-label="Excluir a Laura Hernández de RH">
                       <div class="person-info">
                         <div class="person-name">Laura Hernández</div>
                         <div class="person-email">laura.hernandez@empresa.com</div>
@@ -283,7 +283,7 @@
 
             <!-- Departamento de Gerencia -->
             <div class="department-section" id="dept-section-gerencia" style="display: none;">
-              <div class="department-header" onclick="toggleDepartmentExpand('gerencia')">
+              <div class="department-header" data-action="toggle-expand" data-dept="gerencia">
                 <div class="department-title">
                   <i class="fas fa-chart-line"></i>
                   <span>Gerencia - 2 personas</span>
@@ -301,15 +301,15 @@
                   <p class="help-text">Marca las casillas de las personas que deseas <strong>excluir</strong> de este departamento.</p>
                   
                   <div class="people-list">
-                    <div class="person-item">
-                      <input type="checkbox" id="exclude-gerencia-10" class="exclude-checkbox" onchange="toggleExclusion('Gerencia', 10)">
+                    <div class="person-item person-list-item">
+                      <input type="checkbox" id="exclude-gerencia-10" class="exclude-checkbox" aria-label="Excluir a Miguel Díaz de Gerencia">
                       <div class="person-info">
                         <div class="person-name">Miguel Díaz</div>
                         <div class="person-email">miguel.diaz@empresa.com</div>
                       </div>
                     </div>
-                    <div class="person-item">
-                      <input type="checkbox" id="exclude-gerencia-11" class="exclude-checkbox" onchange="toggleExclusion('Gerencia', 11)">
+                    <div class="person-item person-list-item">
+                      <input type="checkbox" id="exclude-gerencia-11" class="exclude-checkbox" aria-label="Excluir a Sofía Ruiz de Gerencia">
                       <div class="person-info">
                         <div class="person-name">Sofía Ruiz</div>
                         <div class="person-email">sofia.ruiz@empresa.com</div>
@@ -353,14 +353,14 @@
           <div id="individualSelection" class="participants-selection" style="display: none;">
             <div class="form-group">
               <label for="individualSearch">Buscar personas:</label>
-              <input type="search" id="individualSearch" placeholder="Escribe nombre o departamento..." oninput="filterIndividuals()">
+              <input type="search" id="individualSearch" placeholder="Escribe nombre o departamento..." aria-label="Buscar personas por nombre o departamento">
             </div>
             
             <div class="search-tags">
-              <span class="search-tag" onclick="quickIndividualSearch('Ventas')">Ventas</span>
-              <span class="search-tag" onclick="quickIndividualSearch('TI')">TI</span>
-              <span class="search-tag" onclick="quickIndividualSearch('RH')">RH</span>
-              <span class="search-tag" onclick="quickIndividualSearch('Gerencia')">Gerencia</span>
+              <span class="search-tag" data-action="quick-search" data-dept="Ventas">Ventas</span>
+              <span class="search-tag" data-action="quick-search" data-dept="TI">TI</span>
+              <span class="search-tag" data-action="quick-search" data-dept="RH">RH</span>
+              <span class="search-tag" data-action="quick-search" data-dept="Gerencia">Gerencia</span>
             </div>
             
             <div class="form-group">
@@ -373,7 +373,6 @@
             <div class="form-group">
               <label>Personas Seleccionadas:</label>
               <div class="selected-individuals" id="selectedIndividuals">
-                <!-- Las personas seleccionadas aparecerán aquí -->
                 <p class="help-text" id="noSelectedMessageIndividual">No hay personas seleccionadas</p>
               </div>
             </div>
@@ -396,12 +395,12 @@
             <div class="search-container">
               <div class="form-group search-input">
                 <label for="questionSearch">Buscar preguntas:</label>
-                <input type="search" id="questionSearch" placeholder="Escribe palabras clave..." oninput="filterQuestions()">
+                <input type="search" id="questionSearch" placeholder="Escribe palabras clave..." aria-label="Buscar preguntas por palabras clave">
               </div>
               
               <div class="form-group">
                 <label for="categoryFilter">Filtrar por categoría:</label>
-                <select id="categoryFilter" onchange="filterQuestions()">
+                <select id="categoryFilter" aria-label="Filtrar preguntas por categoría">
                   <option value="all">Todas las categorías</option>
                   <option value="comunicacion">Comunicación</option>
                   <option value="liderazgo">Liderazgo</option>
@@ -414,36 +413,38 @@
             
             <!-- Etiquetas de búsqueda rápida -->
             <div class="search-tags">
-              <span class="search-tag" onclick="quickSearch('liderazgo')">Liderazgo</span>
-              <span class="search-tag" onclick="quickSearch('comunicacion')">Comunicación</span>
-              <span class="search-tag" onclick="quickSearch('trabajoEquipo')">Trabajo en equipo</span>
-              <span class="search-tag" onclick="quickSearch('habilidades')">Habilidades</span>
-              <span class="search-tag" onclick="quickSearch('valores')">Valores</span>
+              <span class="search-tag" data-action="quick-search" data-term="liderazgo">Liderazgo</span>
+              <span class="search-tag" data-action="quick-search" data-term="comunicacion">Comunicación</span>
+              <span class="search-tag" data-action="quick-search" data-term="trabajoEquipo">Trabajo en equipo</span>
+              <span class="search-tag" data-action="quick-search" data-term="habilidades">Habilidades</span>
+              <span class="search-tag" data-action="quick-search" data-term="valores">Valores</span>
             </div>
             
             <div class="library-container" id="questionLibrary">
               <!-- Las preguntas predefinidas se cargarán aquí mediante JavaScript -->
             </div>
+
+            <br>
             
-            <button type="button" class="btn" onclick="addSelectedQuestions()" style="margin-top: 15px;">
+            <button type="button" class="btn" data-action="add-selected-questions" aria-label="Agregar preguntas seleccionadas">
               <i class="fas fa-plus"></i> Agregar Preguntas Seleccionadas
             </button>
           </div>
           
-          <button type="button" class="btn" onclick="addQuestion()" style="margin-top: 20px;">
+          <button type="button" class="btn" data-action="add-question" aria-label="Agregar pregunta personalizada">
             <i class="fas fa-plus-circle"></i> Agregar Pregunta Personalizada
           </button>
         </section>
 
         <!-- Acciones del formulario -->
         <div class="form-actions">
-          <button type="button" class="btn danger" onclick="cancelForm()">
+          <button type="button" class="btn danger" data-action="cancel-form" aria-label="Cancelar formulario">
             <i class="fas fa-times"></i> Cancelar
           </button>
-          <button type="button" class="btn warning" onclick="saveAsTemplate()">
+          <button type="button" class="btn warning" data-action="save-template" aria-label="Guardar como plantilla">
             <i class="fas fa-save"></i> Guardar como Plantilla
           </button>
-          <button type="submit" class="btn success">
+          <button type="submit" class="btn success" aria-label="Asignar encuesta">
             <i class="fas fa-check"></i> Asignar Encuesta
           </button>
         </div>
