@@ -547,3 +547,100 @@ td[data-label="Rol"] {
 .dark-mode .chart-container {
   background-color: #444;
 }
+
+/* Estilos para checkbox personalizado */
+.custom-checkbox {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  padding-left: 35px;
+  cursor: pointer;
+  font-size: 14px;
+  user-select: none;
+  color: var(--font-color);
+  margin: 10px 0;
+}
+
+.custom-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.custom-checkbox .checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #fff;
+  border: 2px solid var(--primary-color);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.custom-checkbox:hover input ~ .checkmark {
+  background-color: #f0f0f0;
+}
+
+.custom-checkbox input:checked ~ .checkmark {
+  background-color: var(--success-color);
+  border-color: var(--success-color);
+}
+
+.custom-checkbox .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.custom-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.custom-checkbox .checkmark:after {
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+
+/* Ajustes para modo oscuro */
+.dark-mode .custom-checkbox .checkmark {
+  background-color: #555;
+  border-color: #666;
+}
+
+.dark-mode .custom-checkbox:hover input ~ .checkmark {
+  background-color: #666;
+}
+
+.dark-mode .custom-checkbox input:checked ~ .checkmark {
+  background-color: var(--success-color);
+  border-color: var(--success-color);
+}
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+  .custom-checkbox {
+    padding-left: 30px;
+    font-size: 13px;
+  }
+
+  .custom-checkbox .checkmark {
+    height: 18px;
+    width: 18px;
+  }
+
+  .custom-checkbox .checkmark:after {
+    left: 5px;
+    top: 1px;
+    width: 4px;
+    height: 8px;
+  }
+}
