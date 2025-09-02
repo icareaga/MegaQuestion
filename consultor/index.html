@@ -34,10 +34,7 @@
       <div class="welcome-section">
         <h1>Reportes y Análisis</h1>
         <div class="consultor-actions">
-          <a href="generar-reporte/index.html" class="btn" data-tooltip="Generar un reporte en PDF o Excel">
-            <i class="fas fa-file-export"></i> Generar Reporte
-          </a>
-          <button class="btn success" data-tooltip="Ver estadísticas detalladas">
+          <button class="btn success" id="view-stats" data-tooltip="Ver estadísticas detalladas">
             <i class="fas fa-chart-line"></i> Ver Estadísticas
           </button>
           <button class="btn" id="generate-selected-doc" data-tooltip="Generar documento para usuarios seleccionados">
@@ -301,6 +298,7 @@
       MEGA @Copy 2025</p>
   </footer>
 
+  <!-- Modal para Detalles de Usuario -->
   <div id="userModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
@@ -309,6 +307,18 @@
     </div>
   </div>
 
+  <!-- Modal para Gráfica de Estadísticas -->
+  <div id="statsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeStatsModal()">&times;</span>
+      <h2>Progreso de Encuestas de Usuarios Seleccionados</h2>
+      <div class="chart-container" style="max-width: 600px; margin: 20px auto;">
+        <canvas id="selectedUsersChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notificación Toast -->
   <div id="notification" class="notification" style="display: none;"></div>
 
   <script src="script.js"></script>

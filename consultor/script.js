@@ -1,6 +1,5 @@
 // Datos ficticios ampliados con al menos dos gerentes por departamento
 const users = [
-  // Departamento TI - Gerentes: Javier Torres, Roberto Díaz
   { id: 1, name: "Ana López", department: "TI", gerencia: "Javier Torres", role: "Desarrolladora Frontend", surveys: [{ name: "Evaluación 360°", date: "01/08/2025" }, { name: "Clima Laboral", date: "15/07/2025" }] },
   { id: 2, name: "Carlos Ramírez", department: "TI", gerencia: "Javier Torres", role: "Analista de Sistemas", surveys: [{ name: "Evaluación 360°", date: "02/08/2025" }] },
   { id: 3, name: "María González", department: "TI", gerencia: "Roberto Díaz", role: "Ingeniera DevOps", surveys: [] },
@@ -11,12 +10,10 @@ const users = [
   { id: 10, name: "Roberto Díaz", department: "TI", gerencia: "Roberto Díaz", role: "Administrador de Redes", surveys: [] },
   { id: 13, name: "Diego Herrera", department: "TI", gerencia: "Javier Torres", role: "Desarrollador Full Stack", surveys: [{ name: "Evaluación 360°", date: "04/08/2025" }] },
   { id: 14, name: "Valeria Soto", department: "TI", gerencia: "Roberto Díaz", role: "Analista QA", surveys: [] },
-  // Departamento Legal - Gerentes: Lucía Fernández, Sofía Ruiz
   { id: 7, name: "Sofía Ruiz", department: "Legal", gerencia: "Sofía Ruiz", role: "Abogada Corporativa", surveys: [{ name: "Evaluación 360°", date: "01/08/2025" }] },
   { id: 11, name: "Lucía Fernández", department: "Legal", gerencia: "Lucía Fernández", role: "Asesora Legal Senior", surveys: [{ name: "Clima Laboral", date: "17/07/2025" }] },
   { id: 15, name: "Gabriel Mendoza", department: "Legal", gerencia: "Lucía Fernández", role: "Abogado Junior", surveys: [{ name: "Clima Laboral", date: "18/07/2025" }] },
   { id: 16, name: "Isabela Navarro", department: "Legal", gerencia: "Sofía Ruiz", role: "Asistente Legal", surveys: [] },
-  // Departamento Finanzas - Gerentes: Andrés Morales, Miguel Ortega
   { id: 8, name: "Miguel Ortega", department: "Finanzas", gerencia: "Miguel Ortega", role: "Analista Financiero", surveys: [{ name: "Clima Laboral", date: "15/07/2025" }] },
   { id: 12, name: "Andrés Morales", department: "Finanzas", gerencia: "Andrés Morales", role: "Contador Senior", surveys: [{ name: "Evaluación 360°", date: "03/08/2025" }] },
   { id: 17, name: "Santiago Reyes", department: "Finanzas", gerencia: "Andrés Morales", role: "Auditor Interno", surveys: [{ name: "Evaluación 360°", date: "05/08/2025" }] },
@@ -24,6 +21,9 @@ const users = [
 ];
 
 const allSurveys = ["Evaluación 360°", "Clima Laboral"];
+
+// Variable para almacenar la instancia del gráfico y evitar conflictos
+let selectedUsersChart = null;
 
 // Funciones para acciones
 function viewUserDetails(userId) {
@@ -69,14 +69,12 @@ function generateSelectedDocument() {
     return;
   }
 
-  // Agrega BOM UTF-8 al inicio para mejor compatibilidad con Excel (especialmente para acentos)
   const BOM = '\ufeff';
   let csvContent = BOM + "ID;Nombre;Rol;Departamento;Gerente;Encuestas Contestadas;Fechas\n";
 
   selectedUsers.forEach(user => {
     const surveysNames = user.surveys.map(s => s.name).join("|");
     const surveysDates = user.surveys.map(s => s.date).join("|");
-    // Escapa comillas dobles y envuelve campos en comillas para evitar problemas con caracteres especiales
     csvContent += `"${user.id}";"${user.name}";"${user.role}";"${user.department}";"${user.gerencia}";"${surveysNames}";"${surveysDates}"\n`;
   });
 
@@ -86,6 +84,89 @@ function generateSelectedDocument() {
   link.download = "usuarios_seleccionados.csv";
   link.click();
   showNotification("Documento CSV generado y descargado. Si no se separa en Excel, usa 'Datos > Desde texto/CSV' y selecciona 'Punto y coma' como delimitador.");
+}
+
+function viewSelectedUsersStats() {
+  const selectedCheckboxes = document.querySelectorAll('.user-select:checked');
+  const selectedIds = Array.from(selectedCheckboxes).map(cb => parseInt(cb.dataset.userId));
+  const selectedUsers = users.filter(u => selectedIds.includes(u.id));
+
+  if (selectedUsers.length === 0) {
+    showNotification("No hay usuarios seleccionados para mostrar estadísticas");
+    return;
+  }
+
+  // Destruir gráfico anterior si existe
+  if (selectedUsersChart) {
+    selectedUsersChart.destroy();
+  }
+
+  // Mostrar modal
+  const statsModal = document.getElementById('statsModal');
+  statsModal.style.display = 'flex';
+
+  // Generar datos para el gráfico
+  const labels = selectedUsers.map(user => user.name);
+  const data = selectedUsers.map(user => user.surveys.length);
+
+  // Crear gráfico de barras
+  const ctx = document.getElementById('selectedUsersChart').getContext('2d');
+  selectedUsersChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Encuestas Completadas',
+        data: data,
+        backgroundColor: '#2ecc71',
+        borderColor: '#27ae60',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: allSurveys.length,
+          ticks: {
+            stepSize: 1
+          },
+          title: {
+            display: true,
+            text: 'Nº de Encuestas Completadas'
+          }
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Usuarios'
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          display: true
+        },
+        title: {
+          display: true,
+          text: 'Progreso de Encuestas por Usuario'
+        }
+      }
+    }
+  });
+
+  // Cerrar modal automáticamente después de 5 segundos
+  setTimeout(closeStatsModal, 5000);
+}
+
+function closeStatsModal() {
+  const statsModal = document.getElementById('statsModal');
+  statsModal.style.display = 'none';
+  // Destruir el gráfico para evitar conflictos
+  if (selectedUsersChart) {
+    selectedUsersChart.destroy();
+    selectedUsersChart = null;
+  }
 }
 
 // Actualizar tablas con simulación de carga
@@ -225,6 +306,9 @@ filters.forEach(id => {
 // Listener para el botón de generar documento
 document.getElementById("generate-selected-doc").addEventListener("click", generateSelectedDocument);
 
+// Listener para el botón de ver estadísticas
+document.getElementById("view-stats").addEventListener("click", viewSelectedUsersStats);
+
 // Carga inicial
 updateTables();
 
@@ -278,7 +362,7 @@ new Chart(progressCtx, {
   data: {
     labels: ['Encuestas Completadas', 'Encuestas Pendientes'],
     datasets: [{
-      data: [77, 23], // Ejemplo: 77% completadas
+      data: [77, 23],
       backgroundColor: ['#2ecc71', '#f39c12'],
       borderColor: ['#fff', '#fff'],
       borderWidth: 2

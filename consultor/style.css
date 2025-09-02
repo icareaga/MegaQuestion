@@ -437,14 +437,16 @@ td[data-label="Rol"] {
   align-items: center;
   z-index: 1000;
 }
+
 .modal-content {
   background-color: white;
   padding: 20px;
   border-radius: var(--border-radius);
-  max-width: 500px;
+  max-width: 600px;
   width: 90%;
   box-shadow: var(--box-shadow);
 }
+
 .close {
   float: right;
   cursor: pointer;
@@ -473,27 +475,34 @@ td[data-label="Rol"] {
   --font-color: #fff;
   --gray-color: #ccc;
 }
+
 .dark-mode body {
   background-color: #222;
   color: var(--font-color);
 }
+
 .dark-mode .header {
   background: linear-gradient(135deg, #1565c0, #0d47a1);
 }
+
 .dark-mode .table-container, .dark-mode .summary-card, .dark-mode .kpi-table table {
   background-color: #444;
   color: var(--font-color);
 }
+
 .dark-mode th {
   background-color: #1565c0;
 }
+
 .dark-mode tbody tr {
   background-color: #555;
 }
+
 .dark-mode .modal-content {
   background-color: #444;
   color: var(--font-color);
 }
+
 .dark-mode .filter-select, .dark-mode .search-input {
   background-color: #555;
   color: var(--font-color);
@@ -512,6 +521,7 @@ td[data-label="Rol"] {
 .table-container, .summary-cards, .chart-container {
   animation: fadeIn 0.5s ease-in;
 }
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -521,6 +531,7 @@ td[data-label="Rol"] {
 [data-tooltip] {
   position: relative;
 }
+
 [data-tooltip]:hover:after {
   content: attr(data-tooltip);
   position: absolute;
@@ -544,6 +555,7 @@ td[data-label="Rol"] {
   box-shadow: var(--box-shadow);
   margin-bottom: 20px;
 }
+
 .dark-mode .chart-container {
   background-color: #444;
 }
@@ -642,5 +654,14 @@ td[data-label="Rol"] {
     top: 1px;
     width: 4px;
     height: 8px;
+  }
+
+  /* Ajustar modal de estadísticas para pantallas pequeñas */
+  .modal-content {
+    max-width: 90%;
+  }
+
+  .chart-container {
+    max-width: 100%;
   }
 }
