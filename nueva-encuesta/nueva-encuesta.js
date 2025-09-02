@@ -518,78 +518,325 @@ function gatherOptionsData(questionEl) {
  * Carga las plantillas en la página de plantillas
  */
 function loadTemplates() {
-  const templatesContainer = document.getElementById('templatesContainer');
-  const noTemplatesMessage = document.getElementById('noTemplatesMessage');
-  
-  if (!templatesContainer) return;
-  
+  return new Promise((resolve, reject) => {
+    const templatesContainer = document.getElementById('templatesContainer');
+    const noTemplatesMessage = document.getElementById('noTemplatesMessage');
+    const templateCount = document.getElementById('templateCount');
+    const pageNum = document.getElementById('pageNum');
+    const totalPages = document.getElementById('totalPages');
+    const pagination = document.getElementById('pagination');
+
+    try {
+      surveyTemplates = JSON.parse(localStorage.getItem('surveyTemplates')) || [];
+      if (!Array.isArray(surveyTemplates)) surveyTemplates = [];
+    } catch (e) {
+      surveyTemplates = [];
+      console.error('Error parsing surveyTemplates:', e);
+      reject(e);
+      return;
+    }
+
+    // Actualizar contador
+    templateCount.textContent = `Total: ${surveyTemplates.length} plantilla${surveyTemplates.length !== 1 ? 's' : ''}`;
+
+    // Obtener criterios de ordenamiento y búsqueda
+    const sortBy = document.getElementById('sortTemplates').value;
+    const searchTerm = document.getElementById('templateSearch').value.toLowerCase();
+
+    // Filtrar y ordenar plantillas
+    let filteredTemplates = surveyTemplates.filter(template => {
+      return template.name.toLowerCase().includes(searchTerm);
+    });
+
+    filteredTemplates.sort((a, b) => {
+      switch(sortBy) {
+        case 'newest':
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        case 'oldest':
+          return new Date(a.createdAt) - new Date(b.createdAt);
+        case 'name':
+          return a.name.localeCompare(b.name);
+        default:
+          return 0;
+      }
+    });
+
+    // Paginación
+    const totalItems = filteredTemplates.length;
+    const totalPagesCount = Math.ceil(totalItems / ITEMS_PER_PAGE);
+    currentPage = Math.min(Math.max(1, currentPage), totalPagesCount);
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+    const paginatedTemplates = filteredTemplates.slice(start, end);
+
+    pageNum.textContent = currentPage;
+    totalPages.textContent = totalPagesCount;
+    pagination.style.display = totalPagesCount > 1 ? 'block' : 'none';
+
+    templatesContainer.innerHTML = '';
+
+    if (paginatedTemplates.length === 0) {
+      noTemplatesMessage.style.display = 'block';
+    } else {
+      noTemplatesMessage.style.display = 'none';
+    }
+
+    paginatedTemplates.forEach((template, index) => {
+      const originalIndex = surveyTemplates.findIndex(t => t.id === template.id);
+      const participantsText = template.participantsType === 'departments' 
+        ? `${template.participants.length} departamentos` 
+        : `${template.participants.length} personas`;
+
+      const templateCard = document.createElement('div');
+      templateCard.className = 'template-card';
+      templateCard.innerHTML = `
+        <h3>${template.name}</h3>
+        <p>${template.description || 'Sin descripción'}</p>
+        <div class="template-meta">
+          <span>Creada: ${new Date(template.createdAt).toLocaleDateString()}</span>
+          <span>${participantsText}</span>
+        </div>
+        <div class="template-stats">
+          <span><i class="fas fa-question"></i> ${template.questionCount} preguntas</span>
+          <span><i class="fas fa-chart-pie"></i> ${template.evalType}°</span>
+        </div>
+        <div class="template-actions">
+          <button onclick="previewTemplate(${originalIndex})" class="btn preview small" aria-label="Vista previa de la plantilla ${template.name}">
+            <i class="fas fa-eye"></i> Vista Previa
+          </button>
+          <button onclick="useTemplate(${originalIndex})" class="btn success small" aria-label="Usar plantilla ${template.name}">
+            <i class="fas fa-play"></i> Usar
+          </button>
+          <button onclick="editTemplate(${originalIndex})" class="btn info small" aria-label="Editar plantilla ${template.name}">
+            <i class="fas fa-edit"></i> Editar
+          </button>
+          <button onclick="deleteTemplate(${originalIndex})" class="btn danger small" aria-label="Eliminar plantilla ${template.name}">
+            <i class="fas fa-trash"></i> Eliminar
+          </button>
+        </div>
+      `;
+      templatesContainer.appendChild(templateCard);
+    });
+
+    resolve(); // Resolver la promesa al completar con éxito
+  });
+}
+
+/**
+ * Filtra plantillas según el término de búsqueda
+ */
+function filterTemplates() {
+  currentPage = 1; // Resetear a la primera página al filtrar
+  const loading = document.getElementById('loading');
+  if (loading) loading.style.display = 'block';
+  loadTemplates().then(() => {
+    if (loading) loading.style.display = 'none';
+    console.log('Cargando oculto después de filtrar');
+  }).catch(error => {
+    console.error('Error en filterTemplates:', error);
+    if (loading) loading.style.display = 'none';
+    showStatus('Error al filtrar las plantillas. Intenta de nuevo.', 'red');
+  });
+}
+
+/**
+ * Muestra la vista previa de una plantilla como un formulario
+ */
+function previewTemplate(templateIndex) {
   const surveyTemplates = JSON.parse(localStorage.getItem('surveyTemplates')) || [];
-  templatesContainer.innerHTML = '';
-  
-  if (surveyTemplates.length === 0) {
-    noTemplatesMessage.style.display = 'block';
+  const template = surveyTemplates[templateIndex];
+  if (!template) {
+    showStatus('Error: Plantilla no encontrada.', 'red');
     return;
   }
-  
-  noTemplatesMessage.style.display = 'none';
-  
-  surveyTemplates.forEach((template, index) => {
-    const participantsText = template.participantsType === 'departments' 
-      ? `${template.participants.length} departamentos` 
-      : `${template.participants.length} personas`;
-    
-    const templateCard = document.createElement('div');
-    templateCard.className = 'template-card';
-    templateCard.innerHTML = `
-      <h3>${template.name}</h3>
+
+  const previewContainer = document.getElementById('previewFormContainer');
+  if (!previewContainer) return;
+
+  previewContainer.innerHTML = `
+    <div class="preview-form">
+      <h2>${template.name}</h2>
       <p>${template.description || 'Sin descripción'}</p>
-      <div class="template-meta">
-        <span>Creada: ${new Date(template.createdAt).toLocaleDateString()}</span>
-      </div>
-      <div class="template-stats">
-        <span><i class="fas fa-question"></i> ${template.questionCount} preguntas</span>
-        <span><i class="fas fa-chart-pie"></i> ${template.evalType}°</span>
-        <span><i class="fas fa-users"></i> ${participantsText}</span>
-      </div>
-      <div class="template-actions">
-        <button data-action="use-template" data-index="${index}" class="btn success small" aria-label="Usar plantilla ${template.name}">
-          <i class="fas fa-play"></i> Usar
-        </button>
-        <button data-action="edit-template" data-index="${index}" class="btn info small" aria-label="Editar plantilla ${template.name}">
-          <i class="fas fa-edit"></i> Editar
-        </button>
-        <button data-action="delete-template" data-index="${index}" class="btn danger small" aria-label="Eliminar plantilla ${template.name}">
-          <i class="fas fa-trash"></i> Eliminar
-        </button>
-      </div>
-    `;
-    templatesContainer.appendChild(templateCard);
-  });
+      <form class="survey-preview-form">
+        ${template.questions.map((question, index) => `
+          <div class="preview-question">
+            <label class="preview-question-label">${index + 1}. ${question.text}</label>
+            ${renderQuestionInput(question, index)}
+          </div>
+        `).join('')}
+        <div class="form-actions">
+          <button type="button" class="btn" onclick="closePreviewModal()">Cerrar</button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  const modal = document.getElementById('previewModal');
+  if (modal) modal.style.display = 'block';
+}
+
+/**
+ * Renderiza el campo de entrada para una pregunta según su tipo
+ */
+function renderQuestionInput(question, index) {
+  switch (question.type) {
+    case 'scale':
+      return `
+        <div class="radio-group">
+          ${[1, 2, 3, 4, 5].map(value => `
+            <label class="radio-option">
+              <input type="radio" name="question-${index}" value="${value}" disabled aria-label="Calificación ${value}">
+              <span class="radio-label">${value}</span>
+            </label>
+          `).join('')}
+        </div>
+        <small>Escala: 1 (Muy Malo) - 5 (Excelente)</small>
+      `;
+    case 'yesno':
+      return `
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="question-${index}" value="yes" disabled aria-label="Sí">
+            <span class="radio-label">Sí</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="question-${index}" value="no" disabled aria-label="No">
+            <span class="radio-label">No</span>
+          </label>
+        </div>
+      `;
+    case 'text':
+      return `
+        <textarea class="preview-textarea" placeholder="Escribe tu respuesta aquí..." disabled aria-label="Respuesta de texto para la pregunta ${index + 1}"></textarea>
+      `;
+    case 'multiple':
+      return `
+        <div class="radio-group">
+          ${question.options.map((option, optIndex) => `
+            <label class="radio-option">
+              <input type="radio" name="question-${index}" value="${option}" disabled aria-label="${option}">
+              <span class="radio-label">${option}</span>
+            </label>
+          `).join('')}
+        </div>
+      `;
+    default:
+      return '<p>Tipo de pregunta no soportado.</p>';
+  }
+}
+
+/**
+ * Cierra el modal de vista previa
+ */
+function closePreviewModal() {
+  const modal = document.getElementById('previewModal');
+  if (modal) modal.style.display = 'none';
 }
 
 /**
  * Usa una plantilla existente
  */
 function useTemplate(templateIndex) {
-  window.location.href = `index.html?template=${templateIndex}`;
+  const template = surveyTemplates[templateIndex];
+  if (template) {
+    localStorage.setItem('selectedTemplate', JSON.stringify(template));
+    window.location.href = 'index.html';
+  }
+}
+
+/**
+ * Edita una plantilla existente
+ */
+function editTemplate(templateIndex) {
+  if (confirm('¿Editar esta plantilla? Se abrirá en modo de edición.')) {
+    window.location.href = `index.html?editTemplate=${templateIndex}`;
+  }
+}
+
+/**
+ * Elimina una plantilla
+ */
+function deleteTemplate(templateIndex) {
+  if (confirm('¿Estás seguro de que deseas eliminar esta plantilla? Esta acción no se puede deshacer.')) {
+    surveyTemplates.splice(templateIndex, 1);
+    localStorage.setItem('surveyTemplates', JSON.stringify(surveyTemplates));
+    loadTemplates().then(() => {
+      showStatus('Plantilla eliminada correctamente.', 'green');
+    }).catch(error => {
+      console.error('Error en deleteTemplate:', error);
+      showStatus('Error al eliminar la plantilla.', 'red');
+    });
+  }
+}
+
+/**
+ * Elimina todas las plantillas
+ */
+function clearAllTemplates() {
+  if (surveyTemplates.length === 0) {
+    showStatus('No hay plantillas para eliminar.', 'orange');
+    return;
+  }
+
+  if (confirm('¿Estás seguro de que deseas eliminar TODAS las plantillas? Esta acción no se puede deshacer.')) {
+    surveyTemplates = [];
+    localStorage.setItem('surveyTemplates', JSON.stringify(surveyTemplates));
+    loadTemplates().then(() => {
+      showStatus('Todas las plantillas han sido eliminadas.', 'green');
+    }).catch(error => {
+      console.error('Error en clearAllTemplates:', error);
+      showStatus('Error al eliminar todas las plantillas.', 'red');
+    });
+  }
+}
+
+/**
+ * Simula el cierre de sesión del usuario
+ */
+function logout() {
+  if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+    showStatus('Sesión finalizada.', 'green');
+    setTimeout(() => window.location.href = '../index.html', 1000);
+  }
+}
+
+/**
+ * Muestra un mensaje de estado temporal
+ */
+function showStatus(message, color) {
+  const status = document.getElementById('statusMessage');
+  status.textContent = message;
+  status.style.color = color;
+  status.style.display = 'block';
+  setTimeout(() => status.style.display = 'none', 3000);
 }
 
 /**
  * Carga una plantilla en el formulario
  */
-function loadTemplateIntoForm(templateIndex) {
+function loadTemplateIntoForm(templateIndex, isEditMode = false) {
   const surveyTemplates = JSON.parse(localStorage.getItem('surveyTemplates')) || [];
   const template = surveyTemplates[templateIndex];
   if (!template) return;
   
+  // Guardar el índice de la plantilla que estamos editando
+  if (isEditMode) {
+    localStorage.setItem('editingTemplateIndex', templateIndex);
+    toggleEditModeUI(true);
+  }
+  
   const surveyNameInput = document.getElementById('surveyName');
   if (surveyNameInput) {
-    surveyNameInput.value = template.name + ' - Copia';
+    surveyNameInput.value = isEditMode ? template.name : template.name + ' - Copia';
     surveyNameInput.classList.remove('invalid');
   }
   
   document.getElementById('surveyDescription').value = template.description || '';
-  document.querySelector(`input[name="evalType"][value="${template.evalType}"]`)?.setAttribute('checked', 'checked');
+  
+  // Seleccionar tipo de evaluación
+  document.querySelectorAll('input[name="evalType"]').forEach(radio => {
+    radio.checked = (radio.value === template.evalType);
+  });
   
   if (template.participantsType) {
     const participantTypeInput = document.querySelector(`input[name="participantsType"][value="${template.participantsType}"]`);
@@ -656,7 +903,7 @@ function loadTemplateIntoForm(templateIndex) {
     let optionsHTML = '';
     if (question.type === 'multiple' && question.options) {
       optionsHTML = `
-        <div id="question-options-${questionCounter}" class="options-container">
+        <div id="question-options-${questionCounter}" class="options-container" style="display: block;">
           <div class="form-group">
             <label>Opciones</label>
             <div class="option-list" id="option-list-${questionCounter}">
@@ -700,47 +947,8 @@ function loadTemplateIntoForm(templateIndex) {
     questionsContainer.appendChild(questionDiv);
   });
   
-  alert(`Plantilla "${template.name}" cargada. Puedes modificarla antes de guardar.`);
-}
-
-/**
- * Edita una plantilla existente
- */
-function editTemplate(templateIndex) {
-  if (confirm('¿Editar esta plantilla? Se abrirá en modo de edición.')) {
-    window.location.href = `index.html?editTemplate=${templateIndex}`;
-  }
-}
-
-/**
- * Elimina una plantilla
- */
-function deleteTemplate(templateIndex) {
-  if (confirm('¿Estás seguro de que deseas eliminar esta plantilla? Esta acción no se puede deshacer.')) {
-    const surveyTemplates = JSON.parse(localStorage.getItem('surveyTemplates')) || [];
-    surveyTemplates.splice(templateIndex, 1);
-    localStorage.setItem('surveyTemplates', JSON.stringify(surveyTemplates));
-    loadTemplates();
-    alert('Plantilla eliminada correctamente.');
-  }
-}
-
-/**
- * Cancela el formulario y regresa a la página de administración
- */
-function cancelForm() {
-  if (confirm('¿Estás seguro de que deseas cancelar? Los cambios no se guardarán.')) {
-    window.location.href = '../administrador/index.html';
-  }
-}
-
-/**
- * Simula el cierre de sesión del usuario
- */
-function logout() {
-  if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
-    alert('Sesión finalizada');
-    window.location.href = '../index.html';
+  if (!isEditMode) {
+    alert(`Plantilla "${template.name}" cargada. Puedes modificarla antes de guardar.`);
   }
 }
 
@@ -789,7 +997,18 @@ function handleFormSubmit(e) {
     }
   }
   
-  alert('Encuesta guardada y asignada correctamente');
+  const editingIndex = localStorage.getItem('editingTemplateIndex');
+  const isEditing = editingIndex !== null;
+  
+  if (isEditing) {
+    updateTemplate(parseInt(editingIndex));
+    localStorage.removeItem('editingTemplateIndex');
+    toggleEditModeUI(false);
+  } else {
+    saveAsTemplate();
+  }
+  
+  alert('Encuesta ' + (isEditing ? 'actualizada' : 'guardada') + ' correctamente');
   window.location.href = '../administrador/index.html';
 }
 
@@ -1239,11 +1458,12 @@ function initApp() {
     const editTemplateIndex = urlParams.get('editTemplate');
     
     if (templateIndex !== null) {
-      loadTemplateIntoForm(parseInt(templateIndex));
+      loadTemplateIntoForm(parseInt(templateIndex), false); // Modo copia
     } else if (editTemplateIndex !== null) {
-      loadTemplateIntoForm(parseInt(editTemplateIndex));
+      loadTemplateIntoForm(parseInt(editTemplateIndex), true); // Modo edición
     } else {
-      addQuestion();
+      addQuestion(); // Modo nueva encuesta
+      toggleEditModeUI(false);
     }
     
     if (window.location.pathname.includes('plantillas.html')) {
@@ -1260,3 +1480,106 @@ function initApp() {
 
 // Inicializar cuando se cargue la página
 window.onload = initApp;
+
+// Variables globales para plantillas
+let surveyTemplates = [];
+const ITEMS_PER_PAGE = 10;
+let currentPage = 1;
+
+/**
+ * Cancela el formulario y regresa a la página de administración
+ */
+function cancelForm() {
+  if (confirm('¿Estás seguro de que deseas cancelar? Los cambios no se guardarán.')) {
+    window.location.href = '../administrador/index.html';
+  }
+}
+
+/**
+ * Alterna la interfaz de usuario para modo edición
+ */
+function toggleEditModeUI(isEditing) {
+  const indicator = document.getElementById('editingIndicator');
+  const submitButton = document.querySelector('button[type="submit"]');
+  const saveTemplateBtn = document.querySelector('button[data-action="save-template"]');
+  const useTemplateBtn = document.querySelector('button[data-action="use-template"]');
+  
+  if (indicator) {
+    indicator.style.display = isEditing ? 'block' : 'none';
+  }
+  
+  if (submitButton) {
+    submitButton.innerHTML = isEditing ? 
+      '<i class="fas fa-save"></i> Actualizar Plantilla' : 
+      '<i class="fas fa-check"></i> Asignar Encuesta';
+    submitButton.setAttribute('aria-label', isEditing ? 'Actualizar plantilla' : 'Asignar encuesta');
+  }
+  
+  if (saveTemplateBtn) {
+    saveTemplateBtn.style.display = isEditing ? 'none' : 'inline-flex';
+  }
+  
+  if (useTemplateBtn) {
+    useTemplateBtn.style.display = isEditing ? 'none' : 'inline-flex';
+  }
+}
+
+/**
+ * Actualiza una plantilla existente
+ */
+function updateTemplate(templateIndex) {
+  const surveyTemplates = JSON.parse(localStorage.getItem('surveyTemplates')) || [];
+  const updatedTemplate = gatherTemplateData();
+  
+  if (templateIndex >= 0 && templateIndex < surveyTemplates.length) {
+    surveyTemplates[templateIndex] = {
+      ...updatedTemplate,
+      id: surveyTemplates[templateIndex].id, // Mantener el ID original
+      createdAt: surveyTemplates[templateIndex].createdAt, // Mantener fecha creación
+      updatedAt: new Date().toISOString() // Agregar fecha de actualización
+    };
+    
+    localStorage.setItem('surveyTemplates', JSON.stringify(surveyTemplates));
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Recopila todos los datos del formulario para crear/actualizar plantilla
+ */
+function gatherTemplateData() {
+  const participantsType = document.querySelector('input[name="participantsType"]:checked')?.value;
+  let participantsData = [];
+  
+  if (participantsType === 'departments') {
+    const deptCheckboxes = document.querySelectorAll('input[name="departments"]:checked');
+    participantsData = Array.from(deptCheckboxes).map(checkbox => ({
+      type: 'department',
+      name: checkbox.value,
+      excluded: departmentData[checkbox.value].people
+        .filter(p => p.excluded)
+        .map(p => ({ id: p.id, name: p.name, email: p.email }))
+    }));
+  } else {
+    participantsData = selectedIndividuals.map(ind => ({
+      type: 'individual',
+      id: ind.id,
+      name: ind.name,
+      department: ind.department,
+      email: ind.email
+    }));
+  }
+  
+  return {
+    id: Date.now(), // Para nuevas plantillas, se sobrescribe en updateTemplate
+    name: document.getElementById('surveyName').value,
+    description: document.getElementById('surveyDescription').value,
+    evalType: document.querySelector('input[name="evalType"]:checked')?.value || '0',
+    participantsType: participantsType,
+    participants: participantsData,
+    questions: gatherQuestionsData(),
+    createdAt: new Date().toISOString(), // Para nuevas, se sobrescribe en updateTemplate
+    questionCount: document.querySelectorAll('.question-item').length
+  };
+}
