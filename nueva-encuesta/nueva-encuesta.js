@@ -1,10 +1,11 @@
 /*
  * LÓGICA DE LA APLICACIÓN DE ENCUESTAS
  * Este archivo contiene toda la funcionalidad JavaScript para el formulario
+ * Versión actualizada: Eliminados los botones de búsqueda rápida
  */
 
 // Base de datos de preguntas predefinidas organizadas por categorías
-const questionLibraryData = [
+let questionLibraryData = JSON.parse(localStorage.getItem('questionLibraryData')) || [
   { id: 1, text: "¿Cómo calificarías la comunicación dentro del equipo?", category: "comunicacion", type: "scale" },
   { id: 2, text: "¿Se comparte la información importante con todos?", category: "comunicacion", type: "yesno" },
   { id: 3, text: "¿Qué aspectos mejorarías de la comunicación en el equipo?", category: "comunicacion", type: "text" },
@@ -31,6 +32,15 @@ const questionLibraryData = [
   { id: 24, text: "¿Actúa con integridad en todas las situaciones?", category: "valores", type: "scale" },
   { id: 25, text: "¿La organización promueve un ambiente ético?", category: "valores", type: "yesno" }
 ];
+
+// Lista de categorías predefinidas y dinámicas
+let categories = JSON.parse(localStorage.getItem('categories')) || {
+  'comunicacion': 'Comunicación',
+  'liderazgo': 'Liderazgo',
+  'trabajoEquipo': 'Trabajo en Equipo',
+  'habilidades': 'Habilidades Técnicas',
+  'valores': 'Valores Organizacionales'
+};
 
 // Base de datos de personas disponibles para asignar encuestas
 const individualsDatabase = [
@@ -138,20 +148,31 @@ function loadQuestionLibrary() {
     `;
     libraryContainer.appendChild(questionElement);
   });
+
+  // Actualizar el filtro de categorías dinámicamente
+  updateCategoryFilter();
+}
+
+/**
+ * Actualiza el menú desplegable de categorías
+ */
+function updateCategoryFilter() {
+  const categoryFilter = document.getElementById('categoryFilter');
+  if (!categoryFilter) return;
+
+  categoryFilter.innerHTML = `
+    <option value="all">Todas las categorías</option>
+    ${Object.entries(categories).map(([id, name]) => `
+      <option value="${id}">${name}</option>
+    `).join('')}
+  `;
 }
 
 /**
  * Convierte el identificador de categoría en un nombre legible
  */
-function getCategoryName(category) {
-  const categories = {
-    'comunicacion': 'Comunicación',
-    'liderazgo': 'Liderazgo',
-    'trabajoEquipo': 'Trabajo en Equipo',
-    'habilidades': 'Habilidades',
-    'valores': 'Valores'
-  };
-  return categories[category] || category;
+function getCategoryName(categoryId) {
+  return categories[categoryId] || categoryId;
 }
 
 /**
@@ -159,18 +180,6 @@ function getCategoryName(category) {
  */
 function filterQuestions() {
   loadQuestionLibrary();
-}
-
-/**
- * Realiza una búsqueda rápida al hacer clic en una etiqueta
- */
-function quickSearch(term) {
-  const searchInput = document.getElementById('questionSearch');
-  if (searchInput) {
-    searchInput.value = term;
-    document.getElementById('categoryFilter').value = 'all';
-    filterQuestions();
-  }
 }
 
 /**
@@ -235,8 +244,18 @@ function addQuestionFromLibrary(question) {
         <option value="scale" ${question.type === 'scale' ? 'selected' : ''}>Escala (1-5)</option>
         <option value="yesno" ${question.type === 'yesno' ? 'selected' : ''}>Sí/No</option>
         <option value="text" ${question.type === 'text' ? 'selected' : ''}>Texto abierto</option>
-        <option value="multiple">Opción múltiple</option>
+        <option value="multiple" ${question.type === 'multiple' ? 'selected' : ''}>Opción múltiple</option>
       </select>
+    </div>
+    <div class="form-group">
+      <label for="question-category-${questionCounter}">Categoría</label>
+      <select id="question-category-${questionCounter}" aria-label="Categoría para la pregunta ${questionCounter}">
+        ${Object.entries(categories).map(([id, name]) => `
+          <option value="${id}" ${question.category === id ? 'selected' : ''}>${name}</option>
+        `).join('')}
+        <option value="other">Otra</option>
+      </select>
+      <input type="text" id="new-category-${questionCounter}" placeholder="Nombre de nueva categoría" style="display: none;" aria-label="Nueva categoría para la pregunta ${questionCounter}">
     </div>
     <div id="question-options-${questionCounter}" class="options-container" style="display: none;">
       <div class="form-group">
@@ -247,9 +266,19 @@ function addQuestionFromLibrary(question) {
         </button>
       </div>
     </div>
+    <button type="button" class="btn save-question-btn small" data-action="save-question" data-id="${questionCounter}" aria-label="Guardar pregunta ${questionCounter} en biblioteca">
+      <i class="fas fa-book"></i> Guardar en Biblioteca
+    </button>
   `;
   
   questionsContainer.appendChild(questionDiv);
+  
+  // Configurar listener para mostrar/esconder campo de nueva categoría
+  const categorySelect = document.getElementById(`question-category-${questionCounter}`);
+  const newCategoryInput = document.getElementById(`new-category-${questionCounter}`);
+  categorySelect.addEventListener('change', () => {
+    newCategoryInput.style.display = categorySelect.value === 'other' ? 'block' : 'none';
+  });
   
   if (question.type === 'multiple') {
     changeAnswerType(questionCounter);
@@ -286,6 +315,16 @@ function addQuestion() {
         <option value="multiple">Opción múltiple</option>
       </select>
     </div>
+    <div class="form-group">
+      <label for="question-category-${questionCounter}">Categoría</label>
+      <select id="question-category-${questionCounter}" aria-label="Categoría para la pregunta ${questionCounter}">
+        ${Object.entries(categories).map(([id, name]) => `
+          <option value="${id}">${name}</option>
+        `).join('')}
+        <option value="other">Otra</option>
+      </select>
+      <input type="text" id="new-category-${questionCounter}" placeholder="Nombre de nueva categoría" style="display: none;" aria-label="Nueva categoría para la pregunta ${questionCounter}">
+    </div>
     <div id="question-options-${questionCounter}" class="options-container" style="display: none;">
       <div class="form-group">
         <label>Opciones</label>
@@ -295,9 +334,75 @@ function addQuestion() {
         </button>
       </div>
     </div>
+    <button type="button" class="btn save-question-btn small" data-action="save-question" data-id="${questionCounter}" aria-label="Guardar pregunta ${questionCounter} en biblioteca">
+      <i class="fas fa-book"></i> Guardar en Biblioteca
+    </button>
   `;
   
   questionsContainer.appendChild(questionDiv);
+  
+  // Configurar listener para mostrar/esconder campo de nueva categoría
+  const categorySelect = document.getElementById(`question-category-${questionCounter}`);
+  const newCategoryInput = document.getElementById(`new-category-${questionCounter}`);
+  categorySelect.addEventListener('change', () => {
+    newCategoryInput.style.display = categorySelect.value === 'other' ? 'block' : 'none';
+  });
+}
+
+/**
+ * Guarda una pregunta personalizada en la biblioteca
+ */
+function saveQuestionToLibrary(questionId) {
+  const questionText = document.getElementById(`question-text-${questionId}`)?.value;
+  const questionType = document.getElementById(`question-type-${questionId}`)?.value;
+  let questionCategory = document.getElementById(`question-category-${questionId}`)?.value;
+  const newCategoryInput = document.getElementById(`new-category-${questionId}`)?.value;
+  
+  if (!questionText || questionText.trim() === '') {
+    alert('Por favor, escribe una pregunta válida antes de guardarla.');
+    return;
+  }
+  
+  if (questionType === 'multiple') {
+    const options = gatherOptionsData(document.getElementById(`question-${questionId}`));
+    if (options.length < 2) {
+      alert('Las preguntas de opción múltiple deben tener al menos 2 opciones.');
+      return;
+    }
+  }
+  
+  if (questionCategory === 'other') {
+    if (!newCategoryInput || newCategoryInput.trim() === '') {
+      alert('Por favor, ingresa un nombre válido para la nueva categoría.');
+      return;
+    }
+    
+    // Crear un ID único para la nueva categoría
+    const newCategoryId = newCategoryInput.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+    if (categories[newCategoryId]) {
+      alert('Ya existe una categoría con un nombre similar. Por favor, elige otro nombre.');
+      return;
+    }
+    
+    categories[newCategoryId] = newCategoryInput;
+    localStorage.setItem('categories', JSON.stringify(categories));
+    questionCategory = newCategoryId;
+    
+    // Actualizar el filtro de categorías
+    updateCategoryFilter();
+  }
+  
+  const newQuestion = {
+    id: questionLibraryData.length + 1,
+    text: questionText,
+    category: questionCategory,
+    type: questionType
+  };
+  
+  questionLibraryData.push(newQuestion);
+  localStorage.setItem('questionLibraryData', JSON.stringify(questionLibraryData));
+  loadQuestionLibrary();
+  alert(`Pregunta "${questionText}" guardada en la biblioteca bajo la categoría ${getCategoryName(questionCategory)}.`);
 }
 
 /**
@@ -326,11 +431,17 @@ function renumberQuestions() {
       label.setAttribute('for', `question-text-${questionNumber}`);
     }
     question.id = `question-${questionNumber}`;
-    const input = question.querySelector('input');
+    const input = question.querySelector('input[type="text"]');
     input.id = `question-text-${questionNumber}`;
-    const select = question.querySelector('select');
-    select.id = `question-type-${questionNumber}`;
-    select.setAttribute('aria-label', `Tipo de respuesta para la pregunta ${questionNumber}`);
+    const selectType = question.querySelector('select[id^="question-type-"]');
+    selectType.id = `question-type-${questionNumber}`;
+    selectType.setAttribute('aria-label', `Tipo de respuesta para la pregunta ${questionNumber}`);
+    const selectCategory = question.querySelector('select[id^="question-category-"]');
+    selectCategory.id = `question-category-${questionNumber}`;
+    selectCategory.setAttribute('aria-label', `Categoría para la pregunta ${questionNumber}`);
+    const newCategoryInput = question.querySelector('input[id^="new-category-"]');
+    newCategoryInput.id = `new-category-${questionNumber}`;
+    newCategoryInput.setAttribute('aria-label', `Nueva categoría para la pregunta ${questionNumber}`);
     const optionsContainer = question.querySelector('.options-container');
     optionsContainer.id = `question-options-${questionNumber}`;
     const optionList = question.querySelector('.option-list');
@@ -341,6 +452,9 @@ function renumberQuestions() {
     const removeBtn = question.querySelector('[data-action="remove-question"]');
     removeBtn.setAttribute('data-id', questionNumber);
     removeBtn.setAttribute('aria-label', `Eliminar pregunta ${questionNumber}`);
+    const saveQuestionBtn = document.querySelector('[data-action="save-question"]');
+    saveQuestionBtn.setAttribute('data-id', questionNumber);
+    saveQuestionBtn.setAttribute('aria-label', `Guardar pregunta ${questionNumber} en biblioteca`);
   });
 }
 
@@ -483,12 +597,24 @@ function gatherQuestionsData() {
   const questions = [];
   document.querySelectorAll('.question-item').forEach(questionEl => {
     const questionText = questionEl.querySelector('input[type="text"]')?.value;
-    const questionType = questionEl.querySelector('select')?.value;
+    const questionType = questionEl.querySelector('select[id^="question-type-"]')?.value;
+    let questionCategory = questionEl.querySelector('select[id^="question-category-"]')?.value;
+    const newCategoryInput = questionEl.querySelector('input[id^="new-category-"]')?.value;
     
     if (questionText?.trim()) {
+      if (questionCategory === 'other' && newCategoryInput && newCategoryInput.trim()) {
+        const newCategoryId = newCategoryInput.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+        if (!categories[newCategoryId]) {
+          categories[newCategoryId] = newCategoryInput;
+          localStorage.setItem('categories', JSON.stringify(categories));
+        }
+        questionCategory = newCategoryId;
+      }
+      
       const questionData = {
         text: questionText,
-        type: questionType
+        type: questionType,
+        category: questionCategory
       };
       
       if (questionType === 'multiple') {
@@ -941,10 +1067,30 @@ function loadTemplateIntoForm(templateIndex, isEditMode = false) {
           <option value="multiple" ${question.type === 'multiple' ? 'selected' : ''}>Opción múltiple</option>
         </select>
       </div>
+      <div class="form-group">
+        <label for="question-category-${questionCounter}">Categoría</label>
+        <select id="question-category-${questionCounter}" aria-label="Categoría para la pregunta ${questionCounter}">
+          ${Object.entries(categories).map(([id, name]) => `
+            <option value="${id}" ${question.category === id ? 'selected' : ''}>${name}</option>
+          `).join('')}
+          <option value="other">Otra</option>
+        </select>
+        <input type="text" id="new-category-${questionCounter}" placeholder="Nombre de nueva categoría" style="display: ${question.category === 'other' ? 'block' : 'none'};" aria-label="Nueva categoría para la pregunta ${questionCounter}">
+      </div>
       ${optionsHTML}
+      <button type="button" class="btn save-question-btn small" data-action="save-question" data-id="${questionCounter}" aria-label="Guardar pregunta ${questionCounter} en biblioteca">
+        <i class="fas fa-book"></i> Guardar en Biblioteca
+      </button>
     `;
     
     questionsContainer.appendChild(questionDiv);
+    
+    // Configurar listener para mostrar/esconder campo de nueva categoría
+    const categorySelect = document.getElementById(`question-category-${questionCounter}`);
+    const newCategoryInput = document.getElementById(`new-category-${questionCounter}`);
+    categorySelect.addEventListener('change', () => {
+      newCategoryInput.style.display = categorySelect.value === 'other' ? 'block' : 'none';
+    });
   });
   
   if (!isEditMode) {
@@ -1079,17 +1225,6 @@ function loadIndividuals() {
  */
 function filterIndividuals() {
   loadIndividuals();
-}
-
-/**
- * Realiza una búsqueda rápida de individuos por departamento
- */
-function quickIndividualSearch(department) {
-  const searchInput = document.getElementById('individualSearch');
-  if (searchInput) {
-    searchInput.value = department;
-    filterIndividuals();
-  }
 }
 
 /**
@@ -1341,7 +1476,6 @@ function setupEventListeners() {
       const index = parseInt(element.dataset.index);
       const id = parseInt(element.dataset.id);
       const dept = element.dataset.dept;
-      const term = element.dataset.term;
       
       if (action === 'logout') logout();
       if (action === 'use-template') window.location.href = 'plantillas.html';
@@ -1352,12 +1486,11 @@ function setupEventListeners() {
       if (action === 'remove-question') removeQuestion(id);
       if (action === 'add-option') addOption(id);
       if (action === 'remove-option') removeOption(element);
+      if (action === 'save-question') saveQuestionToLibrary(id);
       if (action === 'use-template' && !isNaN(index)) useTemplate(index);
       if (action === 'edit-template' && !isNaN(index)) editTemplate(index);
       if (action === 'delete-template' && !isNaN(index)) deleteTemplate(index);
       if (action === 'toggle-expand' && dept) toggleDepartmentExpand(dept);
-      if (action === 'quick-search' && dept) quickIndividualSearch(dept);
-      if (action === 'quick-search' && term) quickSearch(term);
       if (action === 'remove-individual' && !isNaN(id)) removeIndividual(id);
     });
   });

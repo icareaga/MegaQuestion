@@ -830,18 +830,18 @@ body {
 
 .modal-content {
   background: white;
-  max-width: 700px; /* Reducido para mejor centrado visual */
+  max-width: 700px;
   width: 90%;
-  max-height: 85vh; /* Aumentado ligeramente para más contenido */
+  max-height: 85vh;
   overflow-y: auto;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   position: relative;
   padding: 20px;
-  margin: 0 auto; /* Centrado horizontal */
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centrado horizontal del contenido interno */
+  align-items: center;
 }
 
 /* Botón de cierre del modal */
@@ -862,8 +862,8 @@ body {
 /* Estilos para el formulario de vista previa */
 .preview-form {
   width: 100%;
-  max-width: 600px; /* Limita el ancho para un mejor centrado */
-  margin: 0 auto; /* Centrado horizontal dentro del modal */
+  max-width: 600px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -876,14 +876,14 @@ body {
   margin-bottom: 10px;
   border-bottom: 2px solid var(--light-gray);
   padding-bottom: 0.5rem;
-  text-align: center; /* Centrado del título */
+  text-align: center;
 }
 
 .preview-form p {
   color: var(--gray-color);
   font-size: 0.9rem;
   margin-bottom: 15px;
-  text-align: center; /* Centrado de la descripción */
+  text-align: center;
 }
 
 .survey-preview-form {
@@ -1020,7 +1020,7 @@ body {
   .modal-content {
     width: 95%;
     padding: 15px;
-    max-height: 90vh; /* Ajustado para pantallas pequeñas */
+    max-height: 90vh;
   }
 
   .preview-form {
@@ -1121,4 +1121,14 @@ body {
 .form-row .form-group {
   flex: 1;
   min-width: 200px;
+}
+
+/* Nuevos estilos para guardar pregunta en biblioteca */
+.save-question-btn {
+  background-color: var(--info-color);
+  color: white;
+}
+
+.save-question-btn:hover {
+  background-color: darken(var(--info-color), 10%);
 }
